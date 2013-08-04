@@ -4,6 +4,9 @@
 
 Add your content here.
 
+= Quick Facts =
+
+ * [http://builds.emberjs.com/ember-1.0.0-rc.6.1.js Ember.js 1.0.0-rc.6.1 (Uncompressed)]
 
 = Details =
 
