@@ -23,7 +23,7 @@ From http://emberjs.com/
 
 Ember.js uses an advanced parser to validate the expressions a developer can use inside the usual curlies. Unlike frameworks such as AngularJS, Ember.js is not vulnerable against "sandbox"-escapes such as the `constructor`-trick.
 
-Earlier versions were nevertheless vulnerable against a concatenation-based bug in the `tagName` attribute of the view element. The bug has been fixed in version 1.0.0-rc.6.1. The following "paste-to-go"-ready code example illustrates this issue. Furthermore, the `tagName` attribute can still be used for arbitrary script execution by simply creating a `<script>` element and filling the view with the !JavaScript code to execute.
+Earlier versions were nevertheless vulnerable against a concatenation-based bug in the `tagName` attribute of the view element. The bug has been fixed in version 1.0.0-rc.6.1. The following "paste-and-go"-ready code example illustrates this issue. Furthermore, the `tagName` attribute can still be used for arbitrary script execution by simply creating a `<script>` element and filling the view with the !JavaScript code to execute.
 
 
 == Attacks against View.tagName ==
@@ -46,4 +46,36 @@ Earlier versions were nevertheless vulnerable against a concatenation-based bug 
   {{#each controller}}{{{unsafe}}}{{/each}}
   </script>
 </body>
+}}}
+
+== Script Execution via View.tagName ==
+
+Ember.js calls its `appentTo()` method and thereby simply passes the dirty DOM-work over to jQuery (without Ember.js wouldn't run anyway). jQuery in its wisdom realizes that a `<script>` elements needs to be appended, parses its content and then evaluates this data.
+
+{{{
+appendTo: function(target) {
+    this._insertElementLater(function() {
+        Ember.assert("You cannot append to an existing Ember.View. Consider using Ember.ContainerView instead.", !Ember.$(target).is('.ember-view') && !Ember.$(target).parents().is('.ember-view'));
+        this.$().appendTo(target);
+    });
+    return this;
+}
+
+
+[...]
+
+// Evaluate executable scripts on first document insertion
+for (i = 0; i < hasScripts; i++) {
+    node = scripts[i];
+    if (rscriptType.test(node.type || "") && 
+        !jQuery._data(node, "globalEval") && jQuery.contains(doc, node)) {
+                                
+        if (node.src) {
+            // Hope ajax is available...
+            jQuery._evalUrl(node.src);
+        } else {
+            jQuery.globalEval((node.text || node.textContent || node.innerHTML || "").replace(rcleanScript, ""));
+        }
+    }
+}
 }}}
