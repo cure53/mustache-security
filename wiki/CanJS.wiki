@@ -1,6 +1,8 @@
 #summary One-sentence summary of this page.
 #labels canjs,ejs
 
+<wiki:toc max_depth="2" />
+
 = Introduction =
 
 "Want to share code between a Zepto mobile app and a jQuery desktop app? No problem. CanJS code (especially models) can be shared across libraries, and so can skill sets! Working on a Dojo project today and a YUI one tomorrow? Don’t throw away all of your skills."
