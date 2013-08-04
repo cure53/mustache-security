@@ -16,7 +16,7 @@ From http://canjs.com/guides/Why.html
 
 = Injection Attacks =
 
-CanJS uses ERB-style templates by default. Everything that is placed in-between the `<%` and `%>` or its siblings is being treated as raw JavaScript. CanJS throws the content of the ERB-style templates into an actual `eval` method - that is called `myEval` but doesn't do anything but wrapping the real `eval`.
+CanJS uses ERB-style templates by default. Everything that is placed in-between the `<%` and `%>` or its siblings is being treated as raw !JavaScript. CanJS throws the content of the ERB-style templates into an actual `eval` method - that is called `myEval` but doesn't do anything but wrapping the real `eval`.
 
 In other words: whenever the user has control over content of the ERB-style template blocks, script injections and XSS are very much likely. The "paste-and-go" code example below shows several cases an attacker can use to bypass server- and browser side XSS filters in case the attacked CanJS application allows injections.
 
