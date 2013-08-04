@@ -19,3 +19,21 @@ Add your content here.  Format your content with:
 	ko.applyBindings();
 </script>
 }}}
+
+== Eval via Function ==
+
+{{{
+parseBindingsString: function(b, c, d) {
+                     try {
+                            var f;
+                            if (!(f = this.Na[b])) {
+                                var g = this.Na, e, m = "with($context){with($data||{}){return{" + a.g.ea(b) + "}}}";
+                                e = new Function("$context", "$element", m);
+                                f = g[b] = e
+                            }
+                            return f(c, d)
+                        } catch (h) {
+                            throw h.message = "Unable to parse bindings.\nBindings value: " + b + "\nMessage: " + h.message, h;
+                        }
+                    }
+}}}
