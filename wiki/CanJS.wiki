@@ -7,6 +7,10 @@
 
 From http://canjs.com/guides/Why.html
 
+= Quick Facts = 
+
+ * [http://canjs.com/release/1.1.6/can.jquery.js CanJS 1.1.6 (Uncompressed)]
+
 = Injection Attacks =
 
 CanJS uses ERB-style templates by default. Everything that is placed in-between the `<%` and `%>` or its siblings is being treated as raw JavaScript. CanJS throws the content of the ERB-style templates into an actual `eval` method - that is called `myEval` but doesn't do anything but wrapping the real `eval`.
