@@ -4,6 +4,9 @@
 
 Add your content here.
 
+= Quick Facts =
+
+ * [http://underscorejs.org/underscore.js Underscore.js 1.5.1 (Uncompressed)]
 
 = Details =
 
