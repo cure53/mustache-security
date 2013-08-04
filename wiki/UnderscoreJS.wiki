@@ -4,18 +4,21 @@
 
 = Introduction =
 
-Add your content here.
+"Underscore is a utility-belt library for JavaScript that provides a lot of the functional programming support that you would expect in Prototype.js (or Ruby), but without extending any of the built-in JavaScript objects. It's the tie to go along with jQuery's tux, and Backbone.js's suspenders.
+
+Underscore provides 80-odd functions that support both the usual functional suspects: map, select, invoke — as well as more specialized helpers: function binding, javascript templating, deep equality testing, and so on. It delegates to built-in functions, if present, so modern browsers will use the native implementations of forEach, map, reduce, filter, every, some and indexOf."
+
+From http://underscorejs.org/
 
 = Quick Facts =
 
  * [http://underscorejs.org/underscore.js Underscore.js 1.5.1 (Uncompressed)]
 
-= Details =
+= Injection Attacks =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Underscore.js, similar to CanJS, uses ERB-style templates by default. Everything that is placed in-between the <% and %> or its siblings is being treated as raw JavaScript. The evaluation of the template strings happens via the usual `Function` constructor.
+
+Whenever the developer has control over content of the ERB-style template blocks, script injections and XSS are very much likely. The "paste-and-go" code example below shows several cases an attacker can use to bypass server- and browser side XSS filters in case the attacked Underscore.js application allows injections. 
 
 {{{
 <script type='text/javascript' src='http://code.jquery.com/jquery-git.js'></script>
