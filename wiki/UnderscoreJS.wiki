@@ -1,0 +1,32 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+
+{{{
+<script type='text/javascript' src='http://code.jquery.com/jquery-git.js'></script>
+<script type='text/javascript' src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+
+<script type='text/javascript'>
+$(window).load(function(){
+	
+_.template($(x).html(), {});
+_.template('<% alert(3) %>', {});
+	
+});
+</script>
+
+<script type="text/html" id='x'>
+    <% alert(1) %>
+    <%= _.constructor.constructor("alert(2)")() %>
+</script>
+}}}
