@@ -30,3 +30,29 @@ _.template('<% alert(3) %>', {});
     <%= _.constructor.constructor("alert(2)")() %>
 </script>
 }}}
+
+== Eval via Function ==
+
+{{{
+j.template = function(n, t, r) {
+        var e;
+        r = j.defaults({}, r, j.templateSettings);
+        var u = new RegExp([(r.escape || q).source, (r.interpolate || q).source, (r.evaluate || q).source].join("|") + "|$", "g"), i = 0, a = "__p+='";
+        n.replace(u, function(t, r, e, u, o) {
+            return a += n.slice(i, o).replace(z, function(n) {
+                return "\\" + B[n]
+            }), r && (a += "'+\n((__t=(" + r + "))==null?'':_.escape(__t))+\n'"), e && (a += "'+\n((__t=(" + e + "))==null?'':__t)+\n'"), u && (a += "';\n" + u + "\n__p+='"), i = o + t.length, t
+        }), a += "';\n", r.variable || (a = "with(obj||{}){\n" + a + "}\n"), a = "var __t,__p='',__j=Array.prototype.join," + "print=function(){__p+=__j.call(arguments,'');};\n" + a + "return __p;\n";
+        try {
+            e = new Function(r.variable || "obj", "_", a)
+        } catch (o) {
+            throw o.source = a, o
+        }
+        if (t)
+            return e(t, j);
+        var c = function(n) {
+            return e.call(this, n, j)
+        };
+        return c.source = "function(" + (r.variable || "obj") + "){\n" + a + "}", c
+    }
+}}}
