@@ -2,15 +2,24 @@
 
 = Introduction =
 
-Add your content here.
+"Knockout is a standalone JavaScript implementation of the Model-View-ViewModel pattern with templates. The underlying principles are therefore:
 
+ * a clear separation between domain data, view components and data to be displayed
+ * the presence of a clearly defined layer of specialized code to manage the relationships between the view components
 
-= Details =
+The latter leverages the native event management features of the Javascript language.
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+These features streamline and simplify the specification of complex relationships between view components, which in turn make the display more responsive and the user experience richer.
+
+Knockout was developed and is maintained by Steve Sanderson, a Microsoft employee. The author stresses that this is a personal open-source project, and not a Microsoft product"
+
+From http://en.wikipedia.org/wiki/KnockoutJS
+
+= Injection Attacks =
+
+KnockoutJS is attackers best friend since it allows to execute arbitrary JavaScript by injecting into HTML5 data attributes. Any labelled JavaScript code that is being found inside a `data-bind` attribute will be evaluated once the bindings are being applied by KnockoutJS.
+
+The following "paste-and-go"-ready code example demonstrates that. 
 
 {{{
 <script src="http://knockoutjs.com/downloads/knockout-2.3.0.js"></script>
@@ -21,6 +30,8 @@ Add your content here.  Format your content with:
 }}}
 
 == Eval via Function ==
+
+As can be seen, very much like CanJS, KnockoutJS uses a string containing a `with()` block to wrap the template data and then send it to the `Function` constructor for direct string-to-code.
 
 {{{
 parseBindingsString: function(b, c, d) {
