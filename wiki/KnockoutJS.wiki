@@ -18,6 +18,7 @@ From http://en.wikipedia.org/wiki/KnockoutJS
 = Quick Facts =
 
  * [http://knockoutjs.com/downloads/knockout-2.3.0.debug.js KnockoutJS 2.3.0 (Uncompressed)]
+ * Usage Stats http://trends.builtwith.com/javascript/KnockoutJS
 
 = Injection Attacks =
 
