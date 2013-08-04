@@ -1,14 +1,25 @@
-#summary One-sentence summary of this page.
+#summary Ember.js security, XSS and injections
+
+<wiki:toc max_depth="2" />
 
 = Introduction =
 
-Add your content here.
+"Write dramatically less code with Ember's Handlebars integrated templates that update automatically when the underlying data changes.
+
+Don't waste time making trivial choices. Ember.js incorporates common idioms so you can focus on what makes your app special, not reinventing the wheel.
+
+Ember.js is built for productivity. Designed with developer ergonomics in mind, its friendly APIs help you get your job done—fast."
+
+From http://emberjs.com/
 
 = Quick Facts =
 
  * [http://builds.emberjs.com/ember-1.0.0-rc.6.1.js Ember.js 1.0.0-rc.6.1 (Uncompressed)]
+ * Usage Stats http://trends.builtwith.com/javascript/Ember
+ * Dedicated Security Program & response process http://emberjs.com/security/
+ * Security Mailing-List https://groups.google.com/forum/#!forum/ember-security
 
-= Details =
+= Injection Attacks =
 
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
