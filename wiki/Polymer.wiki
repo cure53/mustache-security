@@ -24,10 +24,10 @@ The first example is rather simple. Polymer reads over the existing DOM elements
 
 {{{
 <script src="https://rawgithub.com/polymer/cdn/master/polymer.min.js"></script> 
-<element name="table-headers-color',alert(1),'" attributes="hilight"> 
-	<template></template> 
-	<script>
-      Polymer.register(this, {});
+<element name="table-headers-color',alert(1),'"> 
+    <template></template>
+    <script>
+        Polymer.register(this, {});
     </script> 
 </element>
 }}}
