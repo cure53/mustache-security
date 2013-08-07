@@ -1,0 +1,84 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+
+==  jQuery Templates plugin vBeta1.0.0 ==
+
+=== Injection Attacks ===
+
+{{{
+<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://raw.github.com/BorisMoore/jquery-tmpl/master/jquery.tmpl.js"></script>
+
+<script type="text/x-jquery-tmpl" id="jqTemplate">
+ <ul>${constructor.constructor(/alert(1)/.source)()}</ul>
+</script>
+
+<script>
+window.onload = function(){
+	$("#jqTemplate").tmpl({})
+}
+</script>
+}}}
+
+=== Eval via Function ===
+
+{{{
+   // Generate a reusable function that will serve to render a template against data
+    function buildTmplFn(markup) {
+        return new Function("jQuery", "$item", 
+        // Use the variable __ to hold a string array while building the compiled template. (See https://github.com/jquery/jquery-tmpl/issues#issue/10).
+        "var $=jQuery,call,__=[],$data=$item.data;" + 
+
+        // Introduce the data as local variables using with(){}
+        "with($data){__.push('" + 
+
+        // Convert the template into pure JavaScript
+        jQuery.trim(markup)
+        .replace(/([\\'])/g, "\\$1")
+        .replace(/[\r\t\n]/g, " ")
+        .replace(/\$\{([^\}]*)\}/g, "{{= $1}}")
+        .replace(/\{\{(\/?)(\w+|.)(?:\(((?:[^\}]|\}(?!\}))*?)?\))?(?:\s+(.*?)?)?(\(((?:[^\}]|\}(?!\}))*?)\))?\s*\}\}/g, 
+        function(all, slash, type, fnargs, target, parens, args) {
+            var tag = jQuery.tmpl.tag[type], def, expr, exprAutoFnDetect;
+            if (!tag) {
+                throw "Unknown template tag: " + type;
+            }
+            def = tag._default || [];
+            if (parens && !/\w$/.test(target)) {
+                target += parens;
+                parens = "";
+            }
+            if (target) {
+                target = unescape(target);
+                args = args ? ("," + unescape(args) + ")") : (parens ? ")" : "");
+                // Support for target being things like a.toLowerCase();
+                // In that case don't call with template item as 'this' pointer. Just evaluate...
+                expr = parens ? (target.indexOf(".") > -1 ? target + unescape(parens) : ("(" + target + ").call($item" + args)) : target;
+                exprAutoFnDetect = parens ? expr : "(typeof(" + target + ")==='function'?(" + target + ").call($item):(" + target + "))";
+            } else {
+                exprAutoFnDetect = expr = def.$1 || "null";
+            }
+            fnargs = unescape(fnargs);
+            return "');" + 
+            tag[slash ? "close" : "open"]
+            .split("$notnull_1").join(target ? "typeof(" + target + ")!=='undefined' && (" + target + ")!=null" : "true")
+            .split("$1a").join(exprAutoFnDetect)
+            .split("$1").join(expr)
+            .split("$2").join(fnargs || def.$2 || "") + 
+            "__.push('";
+        }) + 
+        "');}return __;"
+        );
+    }
+}}}
