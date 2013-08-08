@@ -12,6 +12,33 @@ Add your content here.  Format your content with:
   * Headings, paragraphs, and lists
   * Automatic links to other wiki pages
 
+== jQuery Markup ==
+
+=== HAML ===
+
+{{{
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.0/jquery.min.js" type="text/javascript"></script>
+<script src="view-source:https://raw.github.com/rse/jquery-markup/master/jquery.markup.js" type="text/javascript"></script>
+<script src="view-source:https://raw.github.com/creationix/haml-js/master/lib/haml.js" type="text/javascript"></script>
+
+<script>
+    $(document).ready(function () {
+        $.markup.load(function () {
+            var h = $("body").markup("hello");
+        });
+    });            
+</script>
+<link href="test2.html" rel="markup" type="text/x-markup-haml"/>
+}}}
+
+{{{
+<markup id="hello">
+!!! XML
+!!! strict
+%svg{ onload: "alert(1)" }
+</markup>
+}}}
+
 ==  jQuery Templates plugin vBeta1.0.0 ==
 
 === Injection Attacks ===
