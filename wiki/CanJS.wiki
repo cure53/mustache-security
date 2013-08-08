@@ -88,7 +88,9 @@ myEval.call(out, 'this.fn = (function(_CONTEXT,_VIEW){' + out.out + '});\r\n//@ 
 return out;
 }}}
 
-CanJS shows no mercy when coming to quirky injection sinks. Aside from the aforementioned `eval` via `myEval`, CanJS also allows to inject code into a string-concatenated call against `can.proxy() - that is later being evaluated.
+== Eval via string.concatenated code in Scanner.helpers.fn() ==
+
+CanJS shows no mercy when coming to quirky injection sinks. Aside from the aforementioned `eval` via `myEval`, CanJS also allows to inject code into a string-concatenated call against `can.proxy()` - that is later being evaluated.
 
 {{{
         Scanner.prototype = {
