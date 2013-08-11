@@ -6,6 +6,10 @@ The purpose of this page is, obviously, to gather the most relevant information 
 
 = Links =
 
+== Templating Engines ==
+
+ * [http://garann.github.io/template-chooser/ Template-Engine-Chooser!]
+
 == !JavaScript MVC & Security ==
 
  * [http://stephenwalther.com/archive/2013/03/05/security-issues-with-single-page-apps Security Issues with Single Page Apps]
