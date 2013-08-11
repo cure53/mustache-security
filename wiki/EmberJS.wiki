@@ -18,6 +18,7 @@ From http://emberjs.com/
  * Usage Stats http://trends.builtwith.com/javascript/Ember
  * Dedicated Security Program & response process http://emberjs.com/security/
  * Security Mailing-List https://groups.google.com/forum/#!forum/ember-security
+
  * *{}SEC-A* <font color="red">*FAIL*</font> Template expressions are parsed safely, yet it's possible to execute arbitrary JavaScript by design
  * *{}SEC-B* <font color="green">*PASS*</font> An isolated execution scope for expressions exists
  * *{}SEC-C* <font color="green">*PASS*</font> Only `SCRIPT` elements with proper type can serve as template containers
