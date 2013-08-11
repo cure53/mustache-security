@@ -22,6 +22,13 @@ From http://en.wikipedia.org/wiki/KnockoutJS
  * [http://knockoutjs.com/downloads/knockout-2.3.0.debug.js KnockoutJS 2.3.0 (Uncompressed)]
  * Usage Stats http://trends.builtwith.com/javascript/KnockoutJS
 
+
+ * *{}SEC-A* <font color="red">*FAIL*</font> Template expressions are equivalent to `eval`
+ * *{}SEC-B* <font color="red">*FAIL*</font> No sandbox or isolated execution scope
+ * *{}SEC-C* <font color="red">*FAIL*</font> JavaScript code will be executed from within `data` attributes
+ * *{}SEC-D* <font color="red">*FAIL*</font> No enforced separation, no obvious way to outsource templates to static files
+ * *{}SEC-E* <font color="red">*FAIL*</font> No dedicated security response program, no security@canjs.com address
+
 = Injection Attacks =
 
 KnockoutJS is attackers best friend since it allows to execute arbitrary JavaScript by injecting into HTML5 data attributes. Any labelled JavaScript code that is being found inside a `data-bind` attribute will be evaluated once the bindings are being applied by KnockoutJS.
