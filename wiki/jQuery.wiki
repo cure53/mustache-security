@@ -13,7 +13,9 @@ We analysed half a dozen of jQuery Template plugins (Tempura, jQuery Mustache, j
 
 == jQuery Markup ==
 
-[https://github.com/rse/jquery-markup jQuery Markup] is a very interesting project as it allows to define templates inside custom tags - the `<markup>` elements. The content of the `<markup>` elements can be of many different types. jQuery Markup supports a large bunch of templating languages - among them even exotic birds like HAML or Emblem.
+[https://github.com/rse/jquery-markup jQuery Markup] is a very interesting project as it allows to define templates inside custom tags - the `<markup>` elements. The content of the `<markup>` elements can be of many different types. jQuery Markup supports a large bunch of templating languages - among them even exotic birds like HAML or Emblem. 
+
+The plugin is not particularly unsafe - note that it insists on separating the templates from the actual page. It is a great and easy way to play with exotic template languages though. That's why we listed it here.
 
 === HAML ===
 
@@ -46,7 +48,7 @@ From https://en.wikipedia.org/wiki/Haml
 
 === Emblem ===
 
-Emblem even works easily without jQuery markup so we stripped down the PoC a bit:
+Emblem even works easily without jQuery markup so we stripped down the PoC a bit. If you ever run into a web application using Emblem and manage to get injected content into a template container... well see for yourself.
 
 {{{
 <meta charset="utf8">
@@ -64,10 +66,11 @@ $(window).load(function(){
 </script>
 }}}
 
+Emblem at least make sure, that only code inside `SCRIPT` elements is being parsed as template container - which is a good thing. As we can see below.
 
 == jQuery Templates Plugin 1.0.1 ==
 
-Unlike other, quite securely designed jQuery templating plugins, this one really messed it up. Is the content of a template tag close to be an eval? Yes. Do we have any sort of sandbox or at least attempts to limit the scope of the embedded !JavaScript? No. Does it accept arbitrary elements as template containers? Yes. Shown below are some examples for successful injections inside a template container - and further below we have the reason for it - straight `eval` via string concatenation crowned by a call to `Function`.
+Unlike other, quite securely designed jQuery templating plugins, this one really messed it up. Is the content of a template tag close to be an `eval`? Yes. Do we have any sort of sandbox or at least attempts to limit the scope of the embedded !JavaScript? No. Does it accept arbitrary elements as template containers? Yes. Shown below are some examples for successful injections inside a template container - and further below we have the reason for it - straight `eval` via string concatenation crowned by a call to `Function`.
 
 === Injection Attacks ===
 
