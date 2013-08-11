@@ -27,7 +27,7 @@ From http://en.wikipedia.org/wiki/KnockoutJS
  * *{}SEC-B* <font color="red">*FAIL*</font> No sandbox or isolated execution scope
  * *{}SEC-C* <font color="red">*FAIL*</font> !JavaScript code will be executed from within `data` attributes
  * *{}SEC-D* <font color="red">*FAIL*</font> No enforced separation, no obvious way to outsource templates to static files
- * *{}SEC-E* <font color="red">*FAIL*</font> No dedicated security response program, no security@canjs.com address
+ * *{}SEC-E* <font color="red">*FAIL*</font> No dedicated security response program, no security@knockoutjs.com address
 
 = Injection Attacks =
 
