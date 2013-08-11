@@ -1,4 +1,5 @@
 #summary Security aspects of the JsRender library
+#labels jsrender,constructor,xss
 
 <wiki:toc max_depth="2" />
 
@@ -12,7 +13,7 @@ From https://github.com/BorisMoore/jsrender
 
 = Quick Facts = 
 
- * [https://raw.github.com/BorisMoore/jsrender/master/jsrender.js !JsRender 1.0.0-beta (Uncompressed)]
+ * [https://raw.github.com/BorisMoore/jsrender/master/jsrender.js JsRender 1.0.0-beta (Uncompressed)]
 
  * *{}SEC-A* <font color="red">*FAIL*</font> Template expressions for data paths/conditions are equivalent to `eval`
  * *{}SEC-B* <font color="red">*FAIL*</font> No sandbox or isolated execution scope
