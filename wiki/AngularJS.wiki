@@ -15,6 +15,7 @@ From http://en.wikipedia.org/wiki/AngularJS
  * [http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.js AngularJS 1.1.5 (Uncompressed)]
  * Supports CSP
  * Maintained by Google
+ * Security contact available via security@angularjs.org
  * Usage Stats http://trends.builtwith.com/javascript/Angular-JS
 
  * *{}SEC-A* <font color="red">*FAIL*</font> Template expressions are equivalent to `eval`
