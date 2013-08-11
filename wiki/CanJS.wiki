@@ -13,6 +13,7 @@ From http://canjs.com/guides/Why.html
 
  * [http://canjs.com/release/1.1.6/can.jquery.js CanJS 1.1.6 (Uncompressed)]
  * Usage Stats http://trends.builtwith.com/framework/CanJS
+
  * *{}SEC-A* <font color="red">*FAIL*</font> Template expressions are equivalent to `eval`
  * *{}SEC-B* <font color="red">*FAIL*</font> No sandbox or isolated execution scope
  * *{}SEC-C* <font color="green">*PASS*</font> Only `SCRIPT` elements with proper type can serve as template containers
