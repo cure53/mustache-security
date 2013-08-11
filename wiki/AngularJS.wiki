@@ -21,7 +21,7 @@ From http://en.wikipedia.org/wiki/AngularJS
  * *{}SEC-A* <font color="red">*FAIL*</font> Template expressions are equivalent to `eval`
  * *{}SEC-B* <font color="red">*FAIL*</font> Isolated execution scope exists, yet (as stated by the maintainers, just to be fair) fails as sandbox
  * *{}SEC-C* <font color="red">*FAIL*</font> Anything can execute !JavaScript. Attributes, curlies, encoded curlies, you name it! 
- * *{}SEC-D* <font color="red">*FAIL*</font> No enforced separation, no obvious way to outsource templates to static files
+ * *{}SEC-D* <font color="red">*FAIL*</font> No enforced separation, possible though and documented. Close fail on a tough requirement.
  * *{}SEC-E* <font color="green">*PASS*</font> A security@angularjs.org address is in place
 = Injection Attacks =
 
