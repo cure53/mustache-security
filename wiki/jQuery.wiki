@@ -142,4 +142,80 @@ jQuery(function(){
 
 }}}
 
-=== Eval via Fn ===
+=== Eval via Function ===
+
+The current jQuery Template Plugin features two ways to parse and execute template code. 
+
+{{{
+    // Generate a reusable function that will serve to render a template against data
+    function buildTmplFn(markup) {
+        var parse_tag = function(all, slash, type, fnargs, target, parens, args) {
+            if(!type) {
+                return "');__.push('";
+            }
+
+            var tag = $.tmpl.tag[ type ], def, expr, exprAutoFnDetect;
+            if(!tag) {
+                console.group("Exception");
+                console.error(markup);
+                console.error('Unknown tag: ', type);
+                console.error(all);
+                console.groupEnd("Exception");
+                return "');__.push('";
+            }
+            def = tag._default || [];
+            if(parens && !regex.last_word.test(target)) {
+                target += parens;
+                parens = "";
+            }
+            if(target) {
+                target = unescape(target);
+                args = args ? ("," + unescape(args) + ")") : (parens ? ")" : "");
+                // Support for target being things like a.toLowerCase();
+                // In that case don't call with template item as 'this' pointer. Just evaluate...
+                expr = parens ? (target.indexOf(".") > -1 ? target + unescape(parens) : ("(" + target + ").call($item" + args)) : target;
+                exprAutoFnDetect = parens ? expr : "(typeof(" + target + ")==='function'?(" + target + ").call($item):(" + target + "))";
+            } else {
+                exprAutoFnDetect = expr = def.$1 || "null";
+            }
+            fnargs = unescape(fnargs);
+            return "');" +
+                   tag[ slash ? "close" : "open" ]
+                           .split("$notnull_1").join(target ? "typeof(" + target + ")!=='undefined' && (" + target + ")!=null" : "true")
+                           .split("$1a").join(exprAutoFnDetect)
+                           .split("$1").join(expr)
+                           .split("$2").join(fnargs || def.$2 || "") +
+                   "__.push('";
+        };
+
+        var depreciated_parse = function() {
+            if($.tmpl.tag[arguments[2]]) {
+                console.group("Depreciated");
+                console.info(markup);
+                console.info('Markup has old style indicators, use {% %} instead of {{ }}');
+                console.info(arguments[0]);
+                console.groupEnd("Depreciated");
+                return parse_tag.apply(this, arguments);
+            } else {
+                return "');__.push('{{" + arguments[2] + "}}');__.push('";
+            }
+        };
+
+        // Use the variable __ to hold a string array while building the compiled template. (See https://github.com/jquery/jquery-tmpl/issues#issue/10).
+        // Introduce the data as local variables using with(){}
+        var parsed_markup_data = "var $=$,call,__=[],$data=$item.data; with($data){__.push('";
+
+        // Convert the template into pure JavaScript
+        var parsed_markup = $.trim(markup);
+        parsed_markup = parsed_markup.replace(regex.sq_escape, "\\$1");
+        parsed_markup = parsed_markup.replace(regex.nl_strip, " ");
+        parsed_markup = parsed_markup.replace(regex.shortcut_replace, "{%= $1%}");
+        parsed_markup = parsed_markup.replace(regex.lang_parse,  parse_tag);
+        parsed_markup = parsed_markup.replace(regex.old_lang_parse, depreciated_parse);
+        parsed_markup_data += parsed_markup;
+
+        parsed_markup_data += "');}return __;";
+
+        return new Function("$", "$item", parsed_markup_data);
+    }
+}}}
