@@ -16,7 +16,8 @@ From http://canjs.com/guides/Why.html
  * *{}SEC-A* <font color="red">*FAIL*</font> Template expressions are equivalent to `eval`
  * *{}SEC-B* <font color="red">*FAIL*</font> No sandbox or isolated execution scope
  * *{}SEC-C* <font color="green">*PASS*</font> Only `SCRIPT` elements with proper type can serve as template containers
- 
+ * *{}SEC-D* <font color="red">*FAIL*</font> No enforced separation, no obvious way to outsource templates to static files
+ * *{}SEC-E* <font color="red">*FAIL*</font> No dedicated security response program, no security@canjs.com address
 
 = Injection Attacks =
 
