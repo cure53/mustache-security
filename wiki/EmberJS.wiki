@@ -18,6 +18,11 @@ From http://emberjs.com/
  * Usage Stats http://trends.builtwith.com/javascript/Ember
  * Dedicated Security Program & response process http://emberjs.com/security/
  * Security Mailing-List https://groups.google.com/forum/#!forum/ember-security
+ * *{}SEC-A* <font color="red">*FAIL*</font> Template expressions are parsed safely, yet it's possible to execute arbitrary JavaScript by design
+ * *{}SEC-B* <font color="green">*PASS*</font> An isolated execution scope for expressions exists
+ * *{}SEC-C* <font color="green">*PASS*</font> Only `SCRIPT` elements with proper type can serve as template containers
+ * *{}SEC-D* <font color="red">*FAIL*</font> No enforced separation, external templates recommended to be fetched via AJAX
+ * *{}SEC-E* <font color="green">*PASS*</font> SRP and security mailing list are in place and work excellently.
 
 = Injection Attacks =
 
@@ -87,7 +92,7 @@ for (var name in Handlebars.templates) {
 
 == Script Execution via View.tagName ==
 
-Ember.js calls its `appentTo()` method and thereby simply passes the dirty DOM-work over to jQuery (without Ember.js wouldn't run anyway). jQuery in its wisdom realizes that a `<script>` elements needs to be appended, parses its content and then evaluates this data.
+Ember.js calls its `appendTo()` method and thereby simply passes the dirty DOM-work over to jQuery (without Ember.js wouldn't run anyway). jQuery in its wisdom realizes that a `<script>` elements needs to be appended, parses its content and then evaluates this data.
 
 {{{
 appendTo: function(target) {
