@@ -1,11 +1,11 @@
-#summary One-sentence summary of this page.
+#summary Other sources covering !JavaScript MVC security
 
 = Introduction =
 
-Add your content here.
+The purpose of this page is, obviously, to gather the most relevant information sources for security in regards to JavaScript MVC and templating frameworks. Submissions of missing links are welcome and will be processed as quickly as possible.
 
 = Links =
 
-== JavaScript MVC & Security ==
+== !JavaScript MVC & Security ==
 
  * [http://stephenwalther.com/archive/2013/03/05/security-issues-with-single-page-apps Security Issues with Single Page Apps]
