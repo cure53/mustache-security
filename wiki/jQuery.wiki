@@ -43,82 +43,10 @@ jQuery Markup is a very interesting project as it allows to define templates ins
 </markup>
 }}}
 
-==  jQuery Templates Plugin vBeta1.0.0 ==
 
-The jQuery Templates Plugin exists in two variations: the meanwhile unsupported Beta and a different plugin of the same name that is still being maintained. We will first have a look at the Beta - and cover the current version afterwards. The attacks possible against both versions don't differ too much - yet the Beta is not as messed up as the most recent version.
+== jQuery Templates Plugin 1.0.1 ==
 
-=== Injection Attacks ===
-
-Once an attacker has write-access to the content of the template block, one of the most common attack patterns can be applied - the constructor-trick.
-
-{{{
-<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
-<script src="https://rawgithub.com/BorisMoore/jquery-tmpl/master/jquery.tmpl.js"></script>
-
-<script type="text/x-jquery-tmpl" id="jqTemplate">
- <ul>${constructor.constructor(/alert(1)/.source)()}</ul>
-</script>
-
-<script>
-window.onload = function(){
-	$("#jqTemplate").tmpl({})
-}
-</script>
-}}}
-
-=== Eval via Function ===
-
-{{{
-   // Generate a reusable function that will serve to render a template against data
-    function buildTmplFn(markup) {
-        return new Function("jQuery", "$item", 
-        // Use the variable __ to hold a string array while building the compiled template. (See https://github.com/jquery/jquery-tmpl/issues#issue/10).
-        "var $=jQuery,call,__=[],$data=$item.data;" + 
-
-        // Introduce the data as local variables using with(){}
-        "with($data){__.push('" + 
-
-        // Convert the template into pure JavaScript
-        jQuery.trim(markup)
-        .replace(/([\\'])/g, "\\$1")
-        .replace(/[\r\t\n]/g, " ")
-        .replace(/\$\{([^\}]*)\}/g, "{{= $1}}")
-        .replace(/\{\{(\/?)(\w+|.)(?:\(((?:[^\}]|\}(?!\}))*?)?\))?(?:\s+(.*?)?)?(\(((?:[^\}]|\}(?!\}))*?)\))?\s*\}\}/g, 
-        function(all, slash, type, fnargs, target, parens, args) {
-            var tag = jQuery.tmpl.tag[type], def, expr, exprAutoFnDetect;
-            if (!tag) {
-                throw "Unknown template tag: " + type;
-            }
-            def = tag._default || [];
-            if (parens && !/\w$/.test(target)) {
-                target += parens;
-                parens = "";
-            }
-            if (target) {
-                target = unescape(target);
-                args = args ? ("," + unescape(args) + ")") : (parens ? ")" : "");
-                // Support for target being things like a.toLowerCase();
-                // In that case don't call with template item as 'this' pointer. Just evaluate...
-                expr = parens ? (target.indexOf(".") > -1 ? target + unescape(parens) : ("(" + target + ").call($item" + args)) : target;
-                exprAutoFnDetect = parens ? expr : "(typeof(" + target + ")==='function'?(" + target + ").call($item):(" + target + "))";
-            } else {
-                exprAutoFnDetect = expr = def.$1 || "null";
-            }
-            fnargs = unescape(fnargs);
-            return "');" + 
-            tag[slash ? "close" : "open"]
-            .split("$notnull_1").join(target ? "typeof(" + target + ")!=='undefined' && (" + target + ")!=null" : "true")
-            .split("$1a").join(exprAutoFnDetect)
-            .split("$1").join(expr)
-            .split("$2").join(fnargs || def.$2 || "") + 
-            "__.push('";
-        }) + 
-        "');}return __;"
-        );
-    }
-}}}
-
-== jQuery templates Plugin 1.0.1 ==
+Unlike other, quite securely designed jQuery templating plugins, this one really messed it up. Is the content of a template tag close to be an eval? Yes. Do we have any sort of sandbox or at least attempts to limit the scope of the embedded !JavaScript? No. Does it accept arbitrary elements as template containers? Yes. Shown below are some examples for successful injections inside a template container - and further below we have the reason for it - straight `eval` via string concatenation crowned by a call to `Function`.
 
 === Injection Attacks ===
 
