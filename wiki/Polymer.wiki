@@ -14,7 +14,7 @@ From http://www.polymer-project.org/faq.html
 
  * [https://rawgithub.com/polymer/cdn/master/polymer.min.js Polymer 0.0.2.x (Minified)]
  * Polymer Downloads http://www.polymer-project.org/getting-the-code.html
- * Polymer is highly experimental
+ * Polymer is highly experimental, evaluating its security metrics might thus be considered unfair and premature.
 
 = Injection Attacks =
 
