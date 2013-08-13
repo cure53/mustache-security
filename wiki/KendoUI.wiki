@@ -1,0 +1,60 @@
+#summary One-sentence summary of this page.
+
+= Introduction =
+
+Add your content here.
+
+
+= Details =
+
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
+
+ * *{}SEC-A* <font color="red">*FAIL*</font> Template expressions are equivalent to `eval`
+ * *{}SEC-B* <font color="red">*FAIL*</font> Isolated execution scope exists, yet (as stated by the maintainers, just to be fair) fails as sandbox
+ * *{}SEC-C* <font color="red">*FAIL*</font> Anything can execute !JavaScript. Attributes, curlies, encoded curlies, you name it! 
+ * *{}SEC-D* <font color="red">*FAIL*</font> No enforced separation, possible though and documented. Close fail on a tough requirement.
+ * *{}SEC-E* <font color="green">*PASS*</font> A security@angularjs.org address is in place
+
+{{{
+<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script src="http://cdn.kendostatic.com/2012.3.1114/js/kendo.all.min.js"></script>
+<div id="x"># alert(1) #</div>
+<script>
+  var template = kendo.template($("#x").html());
+  var tasks = [{ id: 1}];
+  var dataSource = new kendo.data.DataSource({ data: tasks });
+  dataSource.bind("change", function(e) { 
+    var html = kendo.render(template, this.view());
+  });
+  dataSource.read();
+</script>
+}}}
+
+== Eval via Function ==
+
+{{{
+
+    Template = {paramName: "data",useWithBlock: !0,render: function(e, t) {
+            var n, i, r = "";
+            for (n = 0, i = t.length; i > n; n++)
+                r += e(t[n]);
+            return r
+        },compile: function(e, t) {
+            var n, i, r = extend({}, this, t), o = r.paramName, a = o.match(argumentNameRegExp)[0], s = r.useWithBlock, l = "var o,e=kendo.htmlEncode;";
+            if (isFunction(e))
+                return 2 === e.length ? function(t) {
+                    return e($, {data: t}).join("")
+                } : e;
+            for (l += s ? "with(" + o + "){" : "", l += "o=", n = e.replace(escapedCurlyRegExp, "__CURLY__").replace(encodeRegExp, "#=e($1)#").replace(curlyRegExp, "}").replace(escapedSharpRegExp, "__SHARP__").split("#"), i = 0; n.length > i; i++)
+                l += compilePart(n[i], 0 === i % 2);
+            l += s ? ";}" : ";", l += "return o;", l = l.replace(sharpRegExp, "#");
+            try {
+                return Function(a, l)
+            } catch (d) {
+                throw Error(kendo.format("Invalid template:'{0}' Generated code:'{1}'", e, l))
+            }
+        }}
+}}}
