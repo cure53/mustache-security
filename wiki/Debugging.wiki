@@ -9,10 +9,10 @@ The following paragraphs will describe a bunch of small and trivial yet maybe he
 == Overwrite, break, call stack ===
 
 {{{
- #1window.alert = function(a){
+ #1 window.alert = function(a){
  #2
-B#3 return confirm(a)
- #4}
+B#3     return confirm(a)
+ #4 }
 }}}
 
 == Load !JavaScript from raw.github.com ==
