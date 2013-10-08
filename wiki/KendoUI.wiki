@@ -1,22 +1,35 @@
-#summary One-sentence summary of this page.
+#summary Kendo UI security pitfalls and quirks
+
+<wiki:toc max_depth="2" />
 
 = Introduction =
 
-Add your content here.
+"Telerik's Kendo UI is everything professional developers need to build HTML5 sites and mobile apps. Today, productivity of an average HTML/jQuery developer is hampered by assembling a Frankenstein framework of disparate JavaScript libraries
+and plug-ins.
 
+Kendo UI has it all: rich jQuery-based widgets, a simple and consistent programming interface, a rock-solid DataSource, validation, internationalization, a MVVM framework, themes, templates and the list goes on.
 
-= Details =
+You don't have to take our word for it, or that of our customers. Go ahead and check it out for yourself: get your Kendo UI free trial now! (4 free products to choose from!)"
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+From http://www.kendoui.com/
+
+= Quick Facts =
+
+ * [http://cdn.kendostatic.com/2013.2.918/js/kendo.all.min.js Kendo UI Complete v2013.2.918 (Minimized)]
+ * Maintained by Telerik
+ * Security contact available via security@angularjs.org
+ * Usage Stats http://trends.builtwith.com/framework/Kendo-UI
 
  * *{}SEC-A* <font color="red">*FAIL*</font> Template expressions are equivalent to `eval`
  * *{}SEC-B* <font color="red">*FAIL*</font> Isolated execution scope exists, yet (as stated by the maintainers, just to be fair) fails as sandbox
  * *{}SEC-C* <font color="red">*FAIL*</font> Anything can execute !JavaScript. Attributes, curlies, encoded curlies, you name it! 
  * *{}SEC-D* <font color="red">*FAIL*</font> No enforced separation, possible though and documented. Close fail on a tough requirement.
  * *{}SEC-E* <font color="green">*PASS*</font> A security@angularjs.org address is in place
+ * *{}SEC-F <font color="red">*FAIL*</font> Kendo UI uses Function, CSP will have a hard time*
+
+= Injection Attacks =
+
+Kendo UI doesn't really claim to provide security in case of an injection event - but rather goes the way of claiming flexibility and the "power of JavaScript". This might lead to surprises when an attacker can control content of arbitrary elements applied with an ID that is later being used by Kendo UI. 
 
 {{{
 <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
@@ -34,6 +47,8 @@ Add your content here.  Format your content with:
 }}}
 
 == Eval via Function ==
+
+Not unlike many other frameworks, Kendo makes use of the oh-so-comfy Function constructor.
 
 {{{
 
