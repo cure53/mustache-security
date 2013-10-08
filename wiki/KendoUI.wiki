@@ -23,7 +23,7 @@ From http://www.kendoui.com/
  * *{}SEC-B* <font color="red">*FAIL*</font> No isolated execution scope seems to exist
  * *{}SEC-C* <font color="red">*FAIL*</font> JavaScript can be executed from any element fetched by the Kendo UI application logic 
  * *{}SEC-D* <font color="red">*FAIL*</font> No enforced separation
- * *{}SEC-E* <font color="green">*FAIL*</font> No security@kendoui.com address seems to be in place
+ * *{}SEC-E* <font color="red">*FAIL*</font> No security@kendoui.com address seems to be in place
  * *{}SEC-F* <font color="red">*FAIL*</font> Kendo UI uses Function, CSP will have a hard time*
 
 = Injection Attacks =
