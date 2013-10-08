@@ -17,7 +17,6 @@ From http://www.kendoui.com/
 
  * [http://cdn.kendostatic.com/2013.2.918/js/kendo.all.min.js Kendo UI Complete v2013.2.918 (Minimized)]
  * Maintained by Telerik
- * Security contact available via security@angularjs.org
  * Usage Stats http://trends.builtwith.com/framework/Kendo-UI
 
  * *{}SEC-A* <font color="red">*FAIL*</font> Template expressions are equivalent to `eval`
