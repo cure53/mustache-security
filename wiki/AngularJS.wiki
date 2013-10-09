@@ -18,11 +18,12 @@ From http://en.wikipedia.org/wiki/AngularJS
  * Security contact available via security@angularjs.org
  * Usage Stats http://trends.builtwith.com/javascript/Angular-JS
 
- * *{}SEC-A* <font color="red">*FAIL*</font> Template expressions are equivalent to `eval`
- * *{}SEC-B* <font color="red">*FAIL*</font> Isolated execution scope exists, yet (as stated by the maintainers, just to be fair) fails as sandbox
+ * *{}SEC-A* <font color="orange">*FAIL*</font> Template expressions are equivalent to `eval` (fixed in RC versions)
+ * *{}SEC-B* <font color="red">*FAIL*</font> Isolated execution scope exists, yet fails as sandbox
  * *{}SEC-C* <font color="red">*FAIL*</font> Anything can execute !JavaScript. Attributes, curlies, encoded curlies, you name it! 
  * *{}SEC-D* <font color="red">*FAIL*</font> No enforced separation, possible though and documented. Close fail on a tough requirement.
  * *{}SEC-E* <font color="green">*PASS*</font> A security@angularjs.org address is in place
+ * *{}SEC-F* <font color="orange">*FAIL*</font> A special CSP-mode can be activated. While this is great, it re-enables injection attacks against Angular-driven websites
 = Injection Attacks =
 
 AngularJS offers frontend developers a scope object that attempts to isolate global variables from the templating work-flow and keep things lean and "Angular-only". This makes sense - and to be fair, the AngularJS documentation explicitly states that the scope object is not considered to be a sandbox. And indeed it is none. With a simple !JavaScript trick one can break out of this "non-sandbox" and execute arbitrary code in window and other host objects.
