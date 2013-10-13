@@ -382,7 +382,7 @@ Here's what we *cannot* do anymore (DOM errors will be thrown, URLs will be pref
 </head>
 <body>
 	<a ng-attr-href="{{'javascript:'}}alert(1)">CLICK</a>
-	<iframe ng-attr-src="{{'javascript:alert(1)'}}"></a>
+	<iframe ng-attr-src="{{'javascript:alert(1)'}}"></iframe>
 </body>
 }}}
 
