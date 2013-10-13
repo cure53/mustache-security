@@ -371,7 +371,7 @@ Interestingly, even the attribute-wrappers receive sanitation. Like it's the lat
   var EVENT_HANDLER_ATTR_REGEXP = /^(on[a-z]*|formaction)$/;
 }}}
 
-This prohibits an attacker from using JavaScript and other critical URL schemes for certain attributes - yet leaves a bunch of important attributes complete out of consideration.
+This prohibits an attacker from using !JavaScript and other critical URL schemes for certain attributes - yet leaves a bunch of important attributes complete out of consideration.
 
 Here's what we *cannot* do anymore (DOM errors will be thrown, URLs will be prefixed with the string `unsafe:`):
 
@@ -386,7 +386,7 @@ Here's what we *cannot* do anymore (DOM errors will be thrown, URLs will be pref
 </body>
 }}}
 
-And here's what we can still do:
+And here's what we still can do - bypassing the overall not-so-well-composed blacklist:
 
 {{{
 <html ng-app>
