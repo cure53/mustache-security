@@ -421,7 +421,7 @@ And here's what we still can do - bypassing the overall not-so-well-composed bla
 
 AngularJS supports a directive that emulates the dreaded HTML imports. That means, we can request a piece of markup from the same domain (or across domains if the attacker has CORS enabled) and have the framework merge the resulting data into our DOM. 
 
-This enables another very interesting way to execute arbitrary JavaScript using `class` attributes - even with latest AngularJS.
+This enables another very interesting way to execute arbitrary !JavaScript using `class` attributes - even with latest AngularJS.
 
 {{{
 <html ng-app>
@@ -434,4 +434,4 @@ This enables another very interesting way to execute arbitrary JavaScript using 
 </body>
 }}}
 
-In no way should a `class` attribute ever be able to execute arbitrary JavaScript. This issue currently seems to be the most risky part of AngularJS' directives.
+In no way should a `class` attribute ever be able to execute arbitrary !JavaScript. This issue currently seems to be the most risky part of AngularJS' directives.
