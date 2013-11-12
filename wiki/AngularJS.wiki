@@ -18,17 +18,31 @@ From http://en.wikipedia.org/wiki/AngularJS
  * Security contact available via security@angularjs.org
  * Usage Stats http://trends.builtwith.com/javascript/Angular-JS
 
+== AngularJS 1.0.8 ==
+
  * *{}SEC-A* <font color="orange">*FAIL*</font> Template expressions are equivalent to `eval` (fixed in RC versions)
  * *{}SEC-B* <font color="red">*FAIL*</font> Isolated execution scope exists, yet fails as sandbox
  * *{}SEC-C* <font color="red">*FAIL*</font> Anything can execute !JavaScript. Attributes, curlies, encoded curlies, you name it! 
  * *{}SEC-D* <font color="red">*FAIL*</font> No enforced separation, possible though and documented. Close fail on a tough requirement.
  * *{}SEC-E* <font color="green">*PASS*</font> A security@angularjs.org address is in place
  * *{}SEC-F* <font color="orange">*FAIL*</font> A special CSP-mode can be activated. While this is great, it re-enables injection attacks against Angular-driven websites
+
+== AngularJS 1.2.0 ==
+
+ * *{}SEC-A* <font color="orange" title="Some template directives still allow for arbitrary JavaScript execution">*FAIL*</font> 
+ * *{}SEC-B* <font color="green">*PASS*</font> Isolated execution scope exists, makes a robust impression.
+ * *{}SEC-C* <font color="orange">*FAIL*</font> Any element with the ng-app attribute can execute expressions. Injections might cause damage. 
+ * *{}SEC-D* <font color="red">*FAIL*</font> No enforced separation, possible though and documented. Close fail on a tough requirement.
+ * *{}SEC-E* <font color="green">*PASS*</font> A security@angularjs.org address is in place
+ * *{}SEC-F* <font color="green">*PASS*</font> A special CSP-mode can be activated. The CSP-bypass was mitigated by fixing the expression parser. 
+
 = Injection Attacks =
 
 AngularJS offers frontend developers a scope object that attempts to isolate global variables from the templating work-flow and keep things lean and "Angular-only". This makes sense - and to be fair, the AngularJS documentation explicitly states that the scope object is not considered to be a sandbox. And indeed it is none. With a simple !JavaScript trick one can break out of this "non-sandbox" and execute arbitrary code in window and other host objects.
 
-== XSS in Template ==
+== AngularJS 1.0.8 and 1.1.5 ==
+
+=== XSS in Template ===
 
 As can be seen in the "paste-and-go"-ready code examples: once an attacker controls the content of the `ng-app` block, almost arbitrary script execution is possible. Everything inside `{{` and `}}` is treated as AngularJS expression and with the mentioned trick we can break out our scope and get access to `window`.
 
@@ -39,7 +53,7 @@ As can be seen in the "paste-and-go"-ready code examples: once an attacker contr
 </div>
 }}}
 
-== HTML-encoded XSS in Template ==
+=== HTML-encoded XSS in Template ===
 
 AngularJS has no mercy for developers who like to secure their applications by properly encoding user generated data. As the following example shows, even HTML-encoded curlies allow payload execution. 
 
@@ -52,8 +66,8 @@ AngularJS has no mercy for developers who like to secure their applications by p
 
 And just to be on the safe side, AngularJS executes the alert twice.
 
-== XSS via class-attribute ==
-
+=== XSS via class-attribute ==
+=
 {{{
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
 <div class="ng-app">
@@ -61,20 +75,20 @@ And just to be on the safe side, AngularJS executes the alert twice.
 </div>
 }}}
 
-== XSS via data attributes ==
+=== XSS via data attributes ===
 
 {{{
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
 <b data-ng-app data-ng-style="constructor.constructor('alert(1)')()" />
 }}}
 
-= CSP Bypasses with AngularJS =
+== CSP Bypasses with AngularJS 1.0.8 and 1.1.5 ==
 
 AngularJS is one of the very few - if not the only - MVC frameworks that has an explicit CSP mode. That means, developers can use the powerful templating engine despite the restrictions on eval and Function CSP imposes.
 
 That nevertheless bears risks and leads to an interesting phenomenon: In case an attacker can inject HTML into an AngularJS application context, the injected JavaScript will be executed although CSP should protect from this. in other words: AngularJS brings inline-JavaScript on CSP-protected websites back - by using its own attributes and a complex string parsing and event binding mechanism we will discuss later on this page.
 
-== XSS via Click & Hover (ng-click & ng-mouseover attribute) ==
+=== XSS via Click & Hover (ng-click & ng-mouseover attribute) ==
 
 {{{
 <?php
@@ -93,7 +107,7 @@ header('Set-Cookie: abc=123');
 </body>
 }}}
 
-== XSS via Click (data-ng-click attribute) ==
+=== XSS via Click (data-ng-click attribute) ===
 
 {{{
 <?php
@@ -109,7 +123,7 @@ header('Set-Cookie: abc=123');
 <body data-ng-click="$event.view.alert(1)" onclick="alert(2)">Click me</body>
 }}}
 
-== XSS via Template Cache ==
+=== XSS via Template Cache ===
 
 {{{
 <?php
@@ -140,7 +154,7 @@ foo.run(['$templateCache', function($templateCache) {
 }]);
 }}}
 
-== XSS on Hover with CSS-based Overlay ==
+=== XSS on Hover with CSS-based Overlay ===
 
 {{{
 var foo = angular.module("foo", []);
@@ -202,7 +216,7 @@ test.json
 
 == Eval via Function (no CSP) ==
 
-Below we can see the code that causes the XSS (in non-CSP modes). Again the framework makes extensive use of implicit `eval` using the `Function` constructor:
+Below we can see the code that causes the XSS (in non-CSP modes). Again the framework makes use of implicit `eval` using the `Function` constructor:
 
 {{{
     function getterFn(path, csp) {
@@ -349,7 +363,7 @@ function cspSafeGetterFn(key0, key1, key2, key3, key4) {
 }
 }}}
 
-= AngularJS 1.2.0-rc.2 =
+= AngularJS 1.2.0 =
 
 This (currently) most recent version of AngularJS has received an internal security audit and several of the aforementioned issues were fixed or mitigated. 
 
