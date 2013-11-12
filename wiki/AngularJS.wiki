@@ -365,9 +365,11 @@ function cspSafeGetterFn(key0, key1, key2, key3, key4) {
 
 = The State of AngularJS 1.2.0 =
 
-This (currently) most recent version of AngularJS has received an internal security audit and several of the aforementioned issues were fixed or mitigated. A large number of issues here were being addressed as well. Which is good and gave AngularJS a positive boost in the security matrix. 
+This (currently) most recent version of AngularJS has received an internal security audit and several of the aforementioned issues were fixed or mitigated. A large number of issues showcased here were addressed as well. Which is good and gave AngularJS a positive boost in the security matrix. 
 
-Well, several but not all of them. We cannot get a reference to a potentially dangerous object from inside an expression anymore - `Function`, `window` and others were black-listed and the property check in place looks pretty tough. So, say bye-bye to `{{constructor.constructor('alert(1)')()}}`. The CSP bypasses still work though.
+Well, several issues - but not all of them. We cannot get a reference to a potentially dangerous object from inside an expression any more - `Function`, `window` and others were black-listed and the property check in place looks pretty tough. So, say bye-bye to `{{constructor.constructor('alert(1)')()}}`. 
+
+The CSP bypasses were addressed as well. We can still access the `$event` object - yet cannot get a hold on `window` or the attached elements. Now, what is left then?
 
 == Protection Bypasses ==
 
@@ -389,7 +391,7 @@ Interestingly, even the attribute-wrappers receive sanitation. Like it's the lat
 
 This prohibits an attacker from using !JavaScript and other critical URL schemes for certain attributes - yet leaves a bunch of important attributes complete out of consideration.
 
-Here's what we *cannot* do anymore (DOM errors will be thrown, URLs will be prefixed with the string `unsafe:`):
+Here's what we *cannot* do any more (DOM errors will be thrown, URLs will be prefixed with the string `unsafe:`):
 
 {{{
 <html ng-app>
@@ -417,7 +419,7 @@ And here's what we still can do - bypassing the overall not-so-well-composed bla
 
 == HTML Imports ==
 
-AngularJS supports a directive that emulates the dreaded HTML imports. That means, we can request a piece of markup from the same domain (or across domain if the attacker has CORS enabled) and have the framework merge the resulting data into our DOM. 
+AngularJS supports a directive that emulates the dreaded HTML imports. That means, we can request a piece of markup from the same domain (or across domains if the attacker has CORS enabled) and have the framework merge the resulting data into our DOM. 
 
 This enables another very interesting way to execute arbitrary JavaScript using `class` attributes - even with latest AngularJS.
 
