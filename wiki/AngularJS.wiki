@@ -66,8 +66,8 @@ AngularJS has no mercy for developers who like to secure their applications by p
 
 And just to be on the safe side, AngularJS executes the alert twice.
 
-=== XSS via class-attribute ==
-=
+=== XSS via class-attribute ===
+
 {{{
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
 <div class="ng-app">
@@ -88,7 +88,7 @@ AngularJS is one of the very few - if not the only - MVC frameworks that has an 
 
 That nevertheless bears risks and leads to an interesting phenomenon: In case an attacker can inject HTML into an AngularJS application context, the injected JavaScript will be executed although CSP should protect from this. in other words: AngularJS brings inline-JavaScript on CSP-protected websites back - by using its own attributes and a complex string parsing and event binding mechanism we will discuss later on this page.
 
-=== XSS via Click & Hover (ng-click & ng-mouseover attribute) ==
+=== XSS via Click & Hover (ng-click & ng-mouseover attribute) ===
 
 {{{
 <?php
@@ -163,7 +163,7 @@ foo.run(['$templateCache', function($templateCache) {
 }]);
 }}}
 
-== XSS via JSON Callback ==
+=== XSS via JSON Callback ===
 
 {{{
 <?php
@@ -214,7 +214,7 @@ test.json
 <?php echo $_GET['callback']; ?>({"name":"Super Hero","salutation":"Namaskar","greeting":"Namaskar Super Hero!"});
 }}}
 
-=== Eval via Function (no CSP) ==
+== Eval via Function (no CSP) ==
 
 Below we can see the code that causes the XSS (in non-CSP modes). Again the framework makes use of implicit `eval` using the `Function` constructor:
 
@@ -363,7 +363,7 @@ function cspSafeGetterFn(key0, key1, key2, key3, key4) {
 }
 }}}
 
-== AngularJS 1.2.0 ==
+== The State of AngularJS 1.2.0 ==
 
 This (currently) most recent version of AngularJS has received an internal security audit and several of the aforementioned issues were fixed or mitigated. 
 
