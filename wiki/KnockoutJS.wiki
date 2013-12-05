@@ -4,7 +4,7 @@
 
 = Introduction =
 
-"Knockout is a standalone JavaScript implementation of the Model-View-ViewModel pattern with templates. The underlying principles are therefore:
+"Knockout is a standalone JavaScript implementation of the Model-View-!ViewModel pattern with templates. The underlying principles are therefore:
 
  * a clear separation between domain data, view components and data to be displayed
  * the presence of a clearly defined layer of specialized code to manage the relationships between the view components
@@ -47,13 +47,15 @@ The following "paste-and-go"-ready code example demonstrates that.
 
 == KnockoutJS 3.0.0 ==
 
-Not much has changed - only the example above doesn't work any more. Well, with some quick changes applied we can get our `alert` back and do the same as we did before:
+Not much has changed - only the example above doesn't work any more. Well, with some quick changes applied we can get our `alert` back and do the same as we did before. In essence, the label of our binding must match a binding provided by KnockoutJS - and there's quite a bunch of them.  
 
 {{{
 <script src="http://knockoutjs.com/downloads/knockout-3.0.0.js"></script>
 <div data-bind="click: alert(1)"></div>
 <div data-bind="value: alert(2)"></div>
-<select data-bind="options: alert(3)"></select>
+<div data-bind="style: alert(3)"></div>
+...
+<select data-bind="options: alert(99)"></select>
 <script> 
 ko.applyBindings();
 </script>
