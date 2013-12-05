@@ -404,7 +404,7 @@ Here's what we *cannot* do any more (DOM errors will be thrown, URLs will be pre
 </body>
 }}}
 
-And here's what we still can do - bypassing the overall not-so-well-composed blacklist:
+And here's what we still can do in AngularJS 1.2.0 - bypassing the overall not-so-well-composed blacklist:
 
 {{{
 <html ng-app>
@@ -417,7 +417,7 @@ And here's what we still can do - bypassing the overall not-so-well-composed bla
 </body>
 }}}
 
-AngularJS 1.2.1 got these fixed: [https://github.com/angular/angular.js/issues/4927 #4927], [https://github.com/angular/angular.js/pull/4933 #4933]. It is not possible to concatenate values and the `srcdoc` attribute has been flagged as insecure and cannot be used any more.
+AngularJS 1.2.1 got these fixed in November 2013: [https://github.com/angular/angular.js/issues/4927 #4927], [https://github.com/angular/angular.js/pull/4933 #4933]. It is not possible to concatenate values and the `srcdoc` attribute has been flagged as insecure and cannot be used any more.
 
 == HTML Imports ==
 
