@@ -4,7 +4,7 @@
 
 = Introduction =
 
-"Knockout is a standalone JavaScript implementation of the Model-View-!ViewModel pattern with templates. The underlying principles are therefore:
+"Knockout is a standalone !JavaScript implementation of the Model-View-!ViewModel pattern with templates. The underlying principles are therefore:
 
  * a clear separation between domain data, view components and data to be displayed
  * the presence of a clearly defined layer of specialized code to manage the relationships between the view components
@@ -61,7 +61,7 @@ ko.applyBindings();
 </script>
 }}}
 
-Even worse is the way of abusing HTML bindings to inject almost arbitrary content - with double-encoded payload. This is especially helpful if any form of WAF is in the way.
+Fellow contributor [https://twitter.com/jmaxxz @jmaxxz] pointed the following: Even worse than the JavaScript execution via `data-bind` is the way of abusing HTML bindings to inject almost arbitrary content - with double-encoded payload. This is especially helpful if any form of WAF is in the way.
 
 {{{
 <script src="http://knockoutjs.com/downloads/knockout-3.0.0.debug.js"></script>
