@@ -61,7 +61,7 @@ ko.applyBindings();
 </script>
 }}}
 
-Fellow contributor [https://twitter.com/jmaxxz @jmaxxz] pointed the following: Even worse than the JavaScript execution via `data-bind` is the way of abusing HTML bindings to inject almost arbitrary content - with double-encoded payload. This is especially helpful if any form of WAF is in the way.
+Fellow contributor [https://twitter.com/jmaxxz @jmaxxz] pointed out the following: Even worse than the JavaScript execution via `data-bind` is the abuse HTML bindings to inject almost arbitrary content - with double-encoded payload. This is especially helpful if any form of WAF is in the way.
 
 {{{
 <script src="http://knockoutjs.com/downloads/knockout-3.0.0.debug.js"></script>
