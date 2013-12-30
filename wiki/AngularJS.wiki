@@ -440,6 +440,8 @@ In no way should a `class` attribute ever be able to execute arbitrary !JavaScri
 
 Demo: http://html5sec.org/cspbypass/
 
+Mitigation advice: AngularJS has a well working HTML sanitizer. Use it before attaching the fetched markup to the DOM.
+
 == mXSS via HTML Import ==
 
 AngularJS has the habit of using `document.createComment()` for several directives. It for example creates a comment as soon as an include has taken place and tells the DOM "hey, here's the comment telling everyone that I just included stuff". While there's certainly a great, super-heroic reason for that, there's also an interesting vulnerability hidden beneath. 
@@ -459,3 +461,5 @@ This time it's an mXSS problem that can emerge, in case the attacker is able to 
 }}}
 
 Two things happen here: The include takes place (404 or not, doesn't matter) and AngularJS writes the comment into the DOM. Then, we have an `innerHTML`-access. This re-writes the markup and thereby activates the XSS hidden within the HTML comment. Note that we use HTML entities to mask our payload - yet it still works.
+
+Mitigation advice: Don't write unsanitized comments into the DOM. Note the `-->` will not be encoded if used with `document.createComment()` and actually terminate the comment in the DOM. 
