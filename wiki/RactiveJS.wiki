@@ -48,6 +48,7 @@ Similar things can be done with list sections:
 <script>
 new Ractive({template: '#test'});
 </script>
+}}}
 
 And, almost needless to say, encoded payload does the trick too:
 
