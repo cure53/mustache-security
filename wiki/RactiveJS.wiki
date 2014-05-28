@@ -60,3 +60,25 @@ function getFunctionFromString( str, i ) {
 	return fn;
 }
 }}}
+
+== Peculiarities ==
+
+In Ractive.js, events are being declared by using dash-separated attribute names. This doesn't seem to be vulnerable but is worth a mention as it might aid an attacker in bypassing injection black-lists and do stuff to and with the existing code.
+
+{{{
+<script src='http://cdn.ractivejs.org/latest/ractive.js'></script>
+<script id="template" type="text/ractive">
+    <div on-click="test">Clickme</div>
+</script>
+<div id="el"></div>
+<script>
+r = new Ractive({
+    template: '#template',
+    el: '#el',
+    data: {}
+})
+r.on('test', function(event) {
+    alert(1)
+})
+</script>
+}}}
