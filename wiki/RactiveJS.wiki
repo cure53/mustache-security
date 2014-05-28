@@ -52,6 +52,7 @@ new Ractive({template: '#test'});
 
 And, almost needless to say, encoded payload does the trick too:
 
+{{{
 <script src='http://cdn.ractivejs.org/latest/ractive.js'></script>
 <div id="test">&#x7b;&#x7b;&#x23;1..constructor.constructor('alert(1)')():num&#x7d;&#x7d;</div>
 <script>
