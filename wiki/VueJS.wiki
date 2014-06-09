@@ -25,9 +25,7 @@ From http://www.vuejs.org/
 
 == Vue.js 0.10.5 ==
 
-Vue.js is interesting because the commonly used constructor-trick does not work here. Indeed, once we try to inject this into an expression, we get an error message. 
-
-It is however still possible to execute arbitrary JavaScript from inside an expression. The vector to do so looks like this:
+Vue.js is interesting because the commonly used `constructor.constructor`-trick does not work here. Indeed, once we try to inject this into an expression, we get an error message. It is however still possible to execute arbitrary !JavaScript from inside an expression. The vector to do so looks like this:
 
 {{{
 // test me here http://jsfiddle.net/uzsX5/
@@ -78,7 +76,7 @@ This will generate the following string (and also behold the broken regex for Un
 "c['"+, ]*o['"+, ]*n['"+, ]*s['"+, ]*t['"+, ]*r['"+, ]*u['"+, ]*c['"+, ]*t['"+, ]*o['"+, ]*r"
 }}}
 
-We can here witness an attempt to detect the string constructor, even if concatenated. Like, for instance, the string "x['constructor']" or even "y['const'+'ructor']". What could possibly go wrong.
+We can here witness an attempt to detect the string constructor, even if concatenated. Like, for instance, the string `x['constructor']` or even `y['const'+'ructor']`. What could possibly go wrong.
 
 Well, as the attack vector shown above proves, we can simply use comments to evade the regex and inject arbitrary JavaScript code. We can also use Unicode - unless the code point is strictly numeric:
 
@@ -114,3 +112,5 @@ function makeGetter (exp, raw) {
     return fn
 }
 }}}
+
+Vue.js needs to urgently re-think their sandbox concept. It obviously does not work by design and patching in more characters will not be overly helpful.
