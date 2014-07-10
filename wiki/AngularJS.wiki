@@ -509,4 +509,5 @@ causes it to operate on the `window` object instead. Overwriting `window.alert` 
 falsy, meaning that AngularJS won't recognize (and block) attempts to access it anymore.
 
 These are the commits that fix the issues: https://github.com/angular/angular.js/compare/2df721...2e6144
+
 This is the corresponding Changelog entry: https://github.com/angular/angular.js/commit/b3b501
