@@ -536,7 +536,7 @@ The following lines describe an AngularJS sandbox bypass discovered by Mathias K
   * calling blacklisted functions such as Function() through these works!
  * Array functions with callbacks executes the callback function using objects in the array as arguments.
   * Using this, we can control the arguments of Function and create a new function
- * When JavaScript compares the return values of the callback functions
+ * When !JavaScript compares the return values of the callback functions
   * If the return value is an unexpected type, it will be converted to a string for comparison using the toString method.
   * Overriding toString with call will make JS call the function instead of converting it to a string
 
